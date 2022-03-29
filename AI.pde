@@ -128,13 +128,10 @@ void setup(){
   
   remainingTime = startTime;
   timer = new Timer();
-  timer.setDirection("down");
+  timer.setDirection("up");
   timer.setTime(startTime);
-  
-   allTanks[2].moveForward_state();
 }
 
-int i = 0;
 
 void draw() {
   background(200);
@@ -159,30 +156,8 @@ void draw() {
     }
     
     // UPDATE LOGIC
-  //  updateTanksLogic();
-  //  updateTeamsLogic();
-
-    
-    //Check tree collision
-    if(!checkForCollisionsTrees(allTanks[2].getRealPosition().x, allTanks[2].getRealPosition().y) ){
-      
-     println("----------------------------" + allTanks[2].isMoving + " " + allTanks[2].isRotating ); 
-     
-     if (i == 0){
-      //float r = random(1, 360);
-      float r = 90;
-      allTanks[2].rotateTo(radians(r));
-   //   allTanks[2].stop_turning_state = true;
-           
-      
-     }
-   //  allTanks[2].moveForward_state();
-       println("+++++++++++++" + allTanks[2].isMoving + " " + allTanks[2].isRotating ); 
-     i++;
-     
-    };
-    
-    
+    updateTanksLogic();
+    updateTeamsLogic();
     
     // UPDATE TANKS
     updateTanks();
@@ -192,11 +167,7 @@ void draw() {
     checkForCollisionsShots(); 
     checkForCollisionsTanks();  
     
-    
-    
   }
-  
-
   
   // UPDATE DISPLAY  
    teams[0].displayHomeBase();
@@ -204,6 +175,7 @@ void draw() {
    displayTrees();
    updateTanksDisplay();  
    updateShotsDisplay();
+   
    
   
   showGUI();

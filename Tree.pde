@@ -17,8 +17,6 @@ class Tree extends Sprite {
     this.radius = diameter/2;
     //this.m = radius*.1;
     
-    //System.out.println("blablalbla" + radius);
-    
     this.name = "tree";
   }
 
