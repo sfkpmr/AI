@@ -6,8 +6,8 @@ class Team1 extends Team {
     PVector tank2_startpos, int tank2_id, CannonBall ball2) {
     super(team_id, tank_size, c, tank0_startpos, tank0_id, ball0, tank1_startpos, tank1_id, ball1, tank2_startpos, tank2_id, ball2);  
 
-    tanks[0] = new Tank1(tank0_id, this, this.tank0_startpos, this.tank_size, ball0);
-    tanks[1] = new Tank2(tank1_id, this, this.tank1_startpos, this.tank_size, ball1);
+    tanks[0] = new Tank(tank0_id, this, this.tank0_startpos, this.tank_size, ball0);
+    tanks[1] = new Tank(tank1_id, this, this.tank1_startpos, this.tank_size, ball1);
     tanks[2] = new Tank3(tank2_id, this, this.tank2_startpos, this.tank_size, ball2);
 
     //this.homebase_x = 0;
@@ -282,7 +282,7 @@ class Team1 extends Team {
       println("*** Team"+this.team_id+".Tank["+ this.getId() + "].arrived()");
 
       //moveTo(new PVector(int(random(width)),int(random(height))));
-      //moveTo(grid.getRandomNodePosition());
+      //moveTo(grid.getRandomNode Position());
       //this.isMoving = false;
     }
 
@@ -296,14 +296,18 @@ class Team1 extends Team {
 
         //if (!this.isMoving && moving20_120) {
         //  this.moving20_120 = false;
-        moveBy(120, 20);
+        
         //moveTo(grid.getRandomNodePosition()); 
         //}
       }
 
       if (!this.userControlled) {
+        
         //moveForward_state();
         if (this.stop_state) {
+          PVector random = new PVector().random2D().mult(100);
+          println(random);
+          moveBy(random); 
           //rotateTo()
         }
       }
