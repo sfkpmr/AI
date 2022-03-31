@@ -307,6 +307,7 @@ class Team1 extends Team {
          
           if(isAtHomebase && !isReporting) {
            
+            stopMoving();
            isRetreating = false;
            isReporting = true;
            waitUntil = millis() + 3000;
