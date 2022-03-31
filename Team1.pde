@@ -313,6 +313,8 @@ class Team1 extends Team {
           }
           
          PVector home = new PVector(50, 50);
+         println(home);
+         moveBy(home);
           
           //return to base
           
