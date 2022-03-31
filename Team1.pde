@@ -300,12 +300,31 @@ class Team1 extends Team {
         //moveTo(grid.getRandomNodePosition()); 
         //}
       }
-
+      
       if (!this.userControlled) {
         
+        if(this.isRetreating) {
+         
+          if(isAtHomebase && !isReporting) {
+           
+           isRetreating = false;
+           isReporting = true;
+           waitUntil = millis() + 3000;
+          }
+          
+         PVector home = new PVector(50, 50);
+          
+          //return to base
+          
+        }
+        
+          if (millis() >= waitUntil) {
+            isReporting = false;
+          }
+        
         //moveForward_state();
-        if (this.stop_state) {
-          PVector random = new PVector().random2D().mult(100);
+        if (this.stop_state && !isRetreating && !isReporting) {
+          PVector random = new PVector().random2D().mult(250);
           println(random);
           moveBy(random); 
           //rotateTo()

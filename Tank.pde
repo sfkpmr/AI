@@ -60,6 +60,10 @@ class Tank extends Sprite { //<>//
   boolean isColliding; // Tanken håller på att krocka.
   boolean isAtHomebase;
   boolean userControlled; // Om användaren har tagit över kontrollen.
+  boolean isRetreating; //flyr
+  boolean isReporting; //rapporterar fiende tanks
+  
+  int waitUntil;
 
   boolean hasShot; // Tanken kan bara skjuta om den har laddat kanonen, hasShot=true.
   CannonBall ball;
@@ -1034,6 +1038,10 @@ class Tank extends Sprite { //<>//
 
     if (distanceVectMag <= minDistance) {
       println("! Tank["+ this.getId() + "] – collided with another Tank" + other.team_id + ":"+other.id);
+      
+      if(this.team != other.team){
+          this.isRetreating = true;
+      }
 
       this.position.set(this.positionPrev); // Flytta tillbaka.
       if (!this.stop_state) {
