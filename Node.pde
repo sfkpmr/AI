@@ -4,12 +4,20 @@ class Node {
   float x,y;   // x,y location
   float w,h;   // width and height
   float angle; // angle for oscillating brightness
+  Node up, down, right, left;
   
   PVector position;
   int col, row;
   
   Sprite content;
   boolean isEmpty;
+  
+  Node() {
+     this.up = null;
+     this.down = null;
+     this.right = null;
+     this.left = null;
+  }
   
   //***************************************************
   // Node Constructor 
