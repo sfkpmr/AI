@@ -264,6 +264,8 @@ class Team1 extends Team {
     PVector oldPosition = null;
 
     HashMap<Node, Node> graph = new HashMap<Node, Node>();
+    
+    Tank dummy = new Tank(99, this.team, this.startpos, 0, null);
 
     Tank3(int id, Team team, PVector startpos, float diameter, CannonBall ball) {
       super(id, team, startpos, diameter, ball);
@@ -298,6 +300,10 @@ class Team1 extends Team {
 
     private Node moveOneStep() {
       //check 2 steps forward, 1 step down and up
+      //check diagonalt
+      
+      PVector temp = new PVector(this.position.x + 50, 50);
+      dummy.moveBy();
       
       return null;
     }
