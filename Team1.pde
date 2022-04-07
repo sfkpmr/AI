@@ -194,7 +194,7 @@ class Team1 extends Team {
         wander();
       }
     }
-    
+
     //*******************************************************  
     // Tanken meddelas om den har kommit hem.
     public void message_arrivedAtHomebase() {
@@ -250,8 +250,6 @@ class Team1 extends Team {
         if (this.idle_state) {
           wander();
         }
-        
-        
       }
     }
   }
@@ -262,6 +260,10 @@ class Team1 extends Team {
     boolean started;
     boolean first;
     //boolean moving20_120;
+    PVector tempTarget = null;
+    PVector oldPosition = null;
+
+    HashMap<Node, Node> graph = new HashMap<Node, Node>();
 
     Tank3(int id, Team team, PVector startpos, float diameter, CannonBall ball) {
       super(id, team, startpos, diameter, ball);
@@ -278,8 +280,16 @@ class Team1 extends Team {
     }
 
     public void arrived() {
+      PVector tempTarget = targetPosition;
       super.arrived();
       println("*** Team"+this.team_id+".Tank["+ this.getId() + "].arrived()");
+
+      Node a = grid.getNearestNode(oldPosition);
+      Node b = grid.getNearestNode(tempTarget);
+
+      if (!a.equals(b)) {
+        graph.put(b, a);
+      }
 
       //moveTo(new PVector(int(random(width)),int(random(height))));
       //moveTo(grid.getRandomNode Position());
@@ -291,46 +301,48 @@ class Team1 extends Team {
 
       if (!started) {
         started = true;
+        Node startingNode = grid.getNearestNode(positionPrev);
+        graph.put(startingNode, startingNode); //startNode connects how?
         //moveTo(grid.getRandomNodePosition()); 
         //moveForward_state();
 
         //if (!this.isMoving && moving20_120) {
         //  this.moving20_120 = false;
-        
+
         //moveTo(grid.getRandomNodePosition()); 
         //}
       }
-      
+
       if (!this.userControlled) {
-        
-        if(this.isRetreating) {
-         
-          if(isAtHomebase && !isReporting) {
-           
+
+        if (this.isRetreating) {
+
+          if (isAtHomebase && !isReporting) {
+
             stopMoving();
-           isRetreating = false;
-           isReporting = true;
-           waitUntil = millis() + 3000;
+            isRetreating = false;
+            isReporting = true;
+            waitUntil = millis() + 3000;
           }
-          
-         PVector home = new PVector(50, 50);
-         println(home);
-         moveBy(home);
-          
+
+          PVector home = new PVector(50, 50);
+          println(home);
+          moveBy(home);
+
           //return to base
-          
         }
-        
-          if (millis() >= waitUntil) {
-            isReporting = false;
-          }
-        
+
+        if (millis() >= waitUntil) {
+          isReporting = false;
+        }
+
         //moveForward_state();
         if (this.stop_state && !isRetreating && !isReporting) {
-          PVector random = new PVector().random2D().mult(250);
-          println(random);
-          moveBy(random); 
-          //rotateTo()
+          println("moving");
+          //PVector random = new PVector().random2D().mult(250);
+          //println(random);
+          //moveBy(random); 
+          ////rotateTo()
         }
       }
     }
