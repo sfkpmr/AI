@@ -16,6 +16,10 @@ class Node {
   // Denna används för temporära jämförelser mellan Node objekt.
   Node(float _posx, float _posy) {
     this.position = new PVector(_posx, _posy);
+    
+    this.w = 50;
+    this.h = 50;
+    
   }
 
   //***************************************************  

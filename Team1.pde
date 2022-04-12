@@ -261,7 +261,7 @@ class Team1 extends Team {
     boolean first;
     //boolean moving20_120;
     PVector tempTarget = null;
-    PVector oldPosition = null;
+    PVector oldPosition = positionPrev;
 
     HashMap<Node, Node> graph = new HashMap<Node, Node>();
 
@@ -309,7 +309,7 @@ class Team1 extends Team {
       if (!started) {
         started = true;
         Node startingNode = grid.getNearestNode(positionPrev);
-        startingNode.right = startingNode;
+       // startingNode.right = startingNode;
         graph.put(startingNode, startingNode); //startNode connects how?
         //moveTo(grid.getRandomNodePosition()); 
         //moveForward_state();
