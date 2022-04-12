@@ -263,7 +263,7 @@ class Team1 extends Team {
     PVector tempTarget = null;
     PVector oldPosition = positionPrev;
 
-    HashMap<PVector, Node> graph = new HashMap<PVector, Node>();
+    HashMap<PVector, NodeAI> graph = new HashMap<PVector, NodeAI>();
 
     Tank3(int id, Team team, PVector startpos, float diameter, CannonBall ball) {
       super(id, team, startpos, diameter, ball);
@@ -284,21 +284,47 @@ class Team1 extends Team {
       super.arrived();
       println("*** Team"+this.team_id+".Tank["+ this.getId() + "].arrived()");
 
-      Node a = grid.getNearestNode(oldPosition);
-      Node b = grid.getNearestNode(tempTarget);
+      //NodeAI startingNode = new NodeAI(grid.getNearestNodePosition(tempTarget));
+      
+      //startingNode.right = grid.getNearestNode(new PVector(50,0,0));
 
-      if (!a.equals(b)) {
-        graph.put(b, a);
-      }
+      //if (!a.equals(b)) {
+      //  graph.put(oldPosition, startingNode);
+      //}
 
       //moveTo(new PVector(int(random(width)),int(random(height))));
       //moveTo(grid.getRandomNode Position());
       //this.isMoving = false;
     }
 
-    private Node moveOneStep() {
+    private Node moveOneStep(String direction) {
       //check 2 steps forward, 1 step down and up
-       moveBy(new PVector(50,0,0));
+      oldPosition = positionPrev;
+ 
+      switch(direction){
+       
+        case "right":
+        
+          moveBy(new PVector(50,0,0));
+        
+        break;
+        case "left":
+        
+        moveBy(new PVector(-50,0,0));
+        break;
+        case "up":
+        
+        moveBy(new PVector(0,-50,0));
+        break;
+        case "down":
+        
+        moveBy(new PVector(0,50,0));
+        break;
+        
+      }
+       
+      
+      
       
       return null;
     }
@@ -308,17 +334,8 @@ class Team1 extends Team {
 
       if (!started) {
         started = true;
-        Node startingNode = grid.getNearestNode(startpos);
-       // startingNode.right = startingNode;
-        graph.put(startpos, startingNode); //startNode connects how?
-        //moveTo(grid.getRandomNodePosition()); 
-        //moveForward_state();
-
-        //if (!this.isMoving && moving20_120) {
-        //  this.moving20_120 = false;
-
-        //moveTo(grid.getRandomNodePosition()); 
-        //}
+        NodeAI startingNode = new NodeAI(grid.getNearestNodePosition(startpos));
+        graph.put(startpos, startingNode);
       }
 
       if (!this.userControlled) {
@@ -344,14 +361,21 @@ class Team1 extends Team {
           isReporting = false;
         }
 
-        //moveForward_state();
         if (this.stop_state && !isRetreating && !isReporting) {
           println("moving");
-          moveOneStep();
-          //PVector random = new PVector().random2D().mult(250);
-          //println(random);
-          //moveBy(random); 
-          ////rotateTo()
+          
+          NodeAI currentNode = graph.get(grid.getNearestNodePosition(oldPosition));
+          
+          //if (currentNode != null){
+            
+          //  if (currentNode.right.valid == true){
+              
+          //  }
+            
+          //}
+          
+          moveOneStep("down");
+
         }
       }
     }

@@ -1,17 +1,15 @@
 class NodeAI extends Node {
 
-  PVector right, left, up, down;
+  NodeAI right, left, up, down;
+  boolean valid;
 
-  NodeAI(PVector position, PVector right, PVector left, PVector up, PVector down) {
+  NodeAI(PVector position) {
 
     super(position.x, position.y);
-
     this.right = null;
-
     this.left = null;
-
     this.up = null;
-
     this.down = null;
+    this.valid = false;
   }
 }
