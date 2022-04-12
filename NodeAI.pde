@@ -1,7 +1,7 @@
 class NodeAI extends Node {
 
   NodeAI right, left, up, down;
-  boolean valid;
+  boolean valid, visited;
 
   NodeAI(PVector position) {
 
@@ -11,5 +11,6 @@ class NodeAI extends Node {
     this.up = null;
     this.down = null;
     this.valid = false;
+    this.visited = false;
   }
 }

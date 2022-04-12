@@ -285,7 +285,7 @@ class Team1 extends Team {
       println("*** Team"+this.team_id+".Tank["+ this.getId() + "].arrived()");
 
       //NodeAI startingNode = new NodeAI(grid.getNearestNodePosition(tempTarget));
-      
+
       //startingNode.right = grid.getNearestNode(new PVector(50,0,0));
 
       //if (!a.equals(b)) {
@@ -300,32 +300,31 @@ class Team1 extends Team {
     private Node moveOneStep(String direction) {
       //check 2 steps forward, 1 step down and up
       oldPosition = positionPrev;
- 
-      switch(direction){
-       
-        case "right":
-        
-          moveBy(new PVector(50,0,0));
-        
+
+      switch(direction) {
+
+      case "right":
+
+        moveBy(new PVector(50, 0, 0));
+
         break;
-        case "left":
-        
-        moveBy(new PVector(-50,0,0));
+      case "left":
+
+        moveBy(new PVector(-50, 0, 0));
         break;
-        case "up":
-        
-        moveBy(new PVector(0,-50,0));
+      case "up":
+
+        moveBy(new PVector(0, -50, 0));
         break;
-        case "down":
-        
-        moveBy(new PVector(0,50,0));
+      case "down":
+
+        moveBy(new PVector(0, 50, 0));
         break;
-        
       }
-       
-      
-      
-      
+
+
+
+
       return null;
     }
 
@@ -363,19 +362,42 @@ class Team1 extends Team {
 
         if (this.stop_state && !isRetreating && !isReporting) {
           println("moving");
-          
-          NodeAI currentNode = graph.get(grid.getNearestNodePosition(oldPosition));
-          
-          //if (currentNode != null){
-            
-          //  if (currentNode.right.valid == true){
-              
-          //  }
-            
-          //}
-          
-          moveOneStep("down");
 
+          NodeAI currentNode = graph.get(grid.getNearestNodePosition(oldPosition));
+
+          if (currentNode != null) {
+            println("----------------- "+currentNode.position);
+
+            NodeAI right = currentNode.right, left = currentNode.left, up = currentNode.up, down = currentNode.down;
+
+           // if (!right.visited || !left.visited || !up.visited || !down.visited) {
+             
+          //  if (right != null && right.visited) {
+          //    moveOneStep("right");
+          //  } else if (up != null && up.visited) {
+          //    moveOneStep("up");
+          //  } else if (down != null && down.visited) {
+          //    moveOneStep("down");
+          //  } else if (left != null && left.visited){
+          //    moveOneStep("left");
+          //  }
+             
+           // }
+
+          //null checks
+
+          //  if (right != null && right.valid) {
+          //    moveOneStep("right");
+          //  } else if (up != null && up.valid) {
+          //    moveOneStep("up");
+          //  } else if (down != null && down.valid) {
+          //    moveOneStep("down");
+          //  } else if (left != null && left.valid) {
+          //    moveOneStep("left");
+          //  }
+          }
+
+          moveOneStep("down");
         }
       }
     }
