@@ -263,7 +263,7 @@ class Team1 extends Team {
     PVector tempTarget = null;
     PVector oldPosition = positionPrev;
 
-    HashMap<Node, Node> graph = new HashMap<Node, Node>();
+    HashMap<PVector, Node> graph = new HashMap<PVector, Node>();
 
     Tank3(int id, Team team, PVector startpos, float diameter, CannonBall ball) {
       super(id, team, startpos, diameter, ball);
@@ -308,9 +308,9 @@ class Team1 extends Team {
 
       if (!started) {
         started = true;
-        Node startingNode = grid.getNearestNode(positionPrev);
+        Node startingNode = grid.getNearestNode(startpos);
        // startingNode.right = startingNode;
-        graph.put(startingNode, startingNode); //startNode connects how?
+        graph.put(startpos, startingNode); //startNode connects how?
         //moveTo(grid.getRandomNodePosition()); 
         //moveForward_state();
 
