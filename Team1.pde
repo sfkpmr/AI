@@ -296,19 +296,12 @@ class Team1 extends Team {
       //this.isMoving = false;
     }
 
-    private Node moveOneStep() {
-      //check 2 steps forward, 1 step down and up
-      
-      return null;
-    }
-
     public void updateLogic() {
       super.updateLogic();
 
       if (!started) {
         started = true;
         Node startingNode = grid.getNearestNode(positionPrev);
-        startingNode.right = startingNode;
         graph.put(startingNode, startingNode); //startNode connects how?
         //moveTo(grid.getRandomNodePosition()); 
         //moveForward_state();
@@ -346,7 +339,6 @@ class Team1 extends Team {
         //moveForward_state();
         if (this.stop_state && !isRetreating && !isReporting) {
           println("moving");
-          moveOneStep();
           //PVector random = new PVector().random2D().mult(250);
           //println(random);
           //moveBy(random); 
