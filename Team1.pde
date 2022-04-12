@@ -298,6 +298,7 @@ class Team1 extends Team {
 
     private Node moveOneStep() {
       //check 2 steps forward, 1 step down and up
+       moveBy(new PVector(50,0,0));
       
       return null;
     }
