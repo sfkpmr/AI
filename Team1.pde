@@ -340,22 +340,7 @@ class Team1 extends Team {
     }
 
  private Node moveOneStep() {
-        //see node?
-       if(!graph.containsKey(grid.getNearestNode(new PVector(0,50,0).add(position)).position)){
-           // addNode
-          graph.put(grid.getNearestNode(new PVector(0,50,0).add(position)).position, new NodeAI(grid.getNearestNode(new PVector(0,50,0).add(position)).position));
-          moveBy(new PVector(0,50,0)); // (go to node)
-return null;
-        // otherwise, find another way I guess?
-        
-       } else if(!graph.containsKey(grid.getNearestNode(new PVector(50,0,0).add(position)).position)){ // and node is valid and seen?
-          // addNode
-          graph.put(grid.getNearestNode(new PVector(50,0,0).add(position)).position, new NodeAI(grid.getNearestNode(new PVector(50,0,0).add(position)).position));
-          moveBy(new PVector(50,0,0)); // (go to node)
-          // 
-    return null;
-        // up
-      }
+
       // right
       if(!graph.containsKey(grid.getNearestNode(new PVector(50,0,0).add(position)).position)){ // and node is valid and seen?
           // addNode
@@ -386,44 +371,37 @@ return null;
 
         // otherwise, find another way I guess?
       }else{
+           // right
+      if(graph.get(grid.getNearestNode(new PVector(50,0,0).add(position)).position).valid){ // and node is valid and seen?
+          // addNode
+          graph.put(grid.getNearestNode(new PVector(50,0,0).add(position)).position, new NodeAI(grid.getNearestNode(new PVector(50,0,0).add(position)).position));
+          moveBy(new PVector(50,0,0)); // (go to node)
+          // 
+    
+        // up
+      }else if(graph.get(grid.getNearestNode(new PVector(0,-50,0).add(position)).position).valid){
+
+           // addNode
+          graph.put(grid.getNearestNode(new PVector(0,-50,0).add(position)).position, new NodeAI(grid.getNearestNode(new PVector(0,-50,0).add(position)).position));
+          moveBy(new PVector(0,-50,0)); // (go to node)
         
-          NodeAI currentNode = graph.get(grid.getNearestNodePosition(position));
+        //left
+      }else if(graph.get(grid.getNearestNode(new PVector(-50,0,0).add(position)).position).valid){
+        
+           // addNode
+          graph.put(grid.getNearestNode(new PVector(-50,0,0).add(position)).position, new NodeAI(grid.getNearestNode(new PVector(-50,0,0).add(position)).position));
+          moveBy(new PVector(-50,0,0)); // (go to node)
 
-          if (currentNode != null) {
-            println("----------------- "+currentNode.position);
 
-            NodeAI right = currentNode.right, left = currentNode.left, up = currentNode.up, down = currentNode.down;
-            
+        //down
+      }else if(graph.get(grid.getNearestNode(new PVector(0,50,0).add(position)).position).valid){
+           // addNode
+          graph.put(grid.getNearestNode(new PVector(0,50,0).add(position)).position, new NodeAI(grid.getNearestNode(new PVector(0,50,0).add(position)).position));
+          moveBy(new PVector(0,50,0)); // (go to node)
 
-           // if (!right.visited || !left.visited || !up.visited || !down.visited) {
-             
-          //  if (right != null && right.visited) {
-          //    moveOneStep("right");
-          //  } else if (up != null && up.visited) {
-          //    moveOneStep("up");
-          //  } else if (down != null && down.visited) {
-          //    moveOneStep("down");
-          //  } else if (left != null && left.visited){
-          //    moveOneStep("left");
-          //  }
-             
-           // }
-
-          //null checks
-
-          //  if (right != null && right.valid) {
-          //    moveOneStep("right");
-          //  } else if (up != null && up.valid) {
-          //    moveOneStep("up");
-          //  } else if (down != null && down.valid) {
-          //    moveOneStep("down");
-          //  } else if (left != null && left.valid) {
-          //    moveOneStep("left");
-          //  }
-          }
-
-          moveOneStep("down");
-
+        // otherwise, find another way I guess?
+      }
+       
 
       }
     
