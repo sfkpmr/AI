@@ -262,6 +262,7 @@ class Team1 extends Team {
     //boolean moving20_120;
     PVector tempTarget = null;
     PVector oldPosition = positionPrev;
+    boolean bumpedIntoTree = false;
 
     HashMap<PVector, NodeAI> graph = new HashMap<PVector, NodeAI>();
 
@@ -275,7 +276,7 @@ class Team1 extends Team {
     // Tanken meddelas om kollision med trädet.
     public void message_collision(Tree other) {
       println("*** Team"+this.team_id+".Tank["+ this.getId() + "].collision(Tree)");
-
+      bumpedIntoTree = true;
       //rotateTo(grid.getRandomNodePosition());
     }
 
@@ -283,6 +284,11 @@ class Team1 extends Team {
       PVector tempTarget = targetPosition;
       super.arrived();
       println("*** Team"+this.team_id+".Tank["+ this.getId() + "].arrived()");
+      
+      
+      graph.get(grid.getNearestNode(position).position).valid = true;
+      graph.get(grid.getNearestNode(position).position).visited = true;
+      oldPosition = position;
 
       //NodeAI startingNode = new NodeAI(grid.getNearestNodePosition(tempTarget));
 
@@ -328,47 +334,61 @@ class Team1 extends Team {
       return null;
     }
 
-    public void updateLogic() {
-      super.updateLogic();
-
-      if (!started) {
-        started = true;
-        NodeAI startingNode = new NodeAI(grid.getNearestNodePosition(startpos));
-        graph.put(startpos, startingNode);
+ private Node moveOneStep() {
+        //see node?
+       if(!graph.containsKey(grid.getNearestNode(new PVector(0,50,0).add(position)).position)){
+           // addNode
+          graph.put(grid.getNearestNode(new PVector(0,50,0).add(position)).position, new NodeAI(grid.getNearestNode(new PVector(0,50,0).add(position)).position));
+          moveBy(new PVector(0,50,0)); // (go to node)
+return null;
+        // otherwise, find another way I guess?
+        
+       } else if(!graph.containsKey(grid.getNearestNode(new PVector(50,0,0).add(position)).position)){ // and node is valid and seen?
+          // addNode
+          graph.put(grid.getNearestNode(new PVector(50,0,0).add(position)).position, new NodeAI(grid.getNearestNode(new PVector(50,0,0).add(position)).position));
+          moveBy(new PVector(50,0,0)); // (go to node)
+          // 
+    return null;
+        // up
       }
+      // right
+      if(!graph.containsKey(grid.getNearestNode(new PVector(50,0,0).add(position)).position)){ // and node is valid and seen?
+          // addNode
+          graph.put(grid.getNearestNode(new PVector(50,0,0).add(position)).position, new NodeAI(grid.getNearestNode(new PVector(50,0,0).add(position)).position));
+          moveBy(new PVector(50,0,0)); // (go to node)
+          // 
+    
+        // up
+      }else if(!graph.containsKey(grid.getNearestNode(new PVector(0,-50,0).add(position)).position)){
 
-      if (!this.userControlled) {
+           // addNode
+          graph.put(grid.getNearestNode(new PVector(0,-50,0).add(position)).position, new NodeAI(grid.getNearestNode(new PVector(0,-50,0).add(position)).position));
+          moveBy(new PVector(0,-50,0)); // (go to node)
+        
+        //left
+      }else if(!graph.containsKey(grid.getNearestNode(new PVector(-50,0,0).add(position)).position)){
+        
+           // addNode
+          graph.put(grid.getNearestNode(new PVector(-50,0,0).add(position)).position, new NodeAI(grid.getNearestNode(new PVector(-50,0,0).add(position)).position));
+          moveBy(new PVector(-50,0,0)); // (go to node)
 
-        if (this.isRetreating) {
 
-          if (isAtHomebase && !isReporting) {
+        //down
+      }else if(!graph.containsKey(grid.getNearestNode(new PVector(0,50,0).add(position)).position)){
+           // addNode
+          graph.put(grid.getNearestNode(new PVector(0,50,0).add(position)).position, new NodeAI(grid.getNearestNode(new PVector(0,50,0).add(position)).position));
+          moveBy(new PVector(0,50,0)); // (go to node)
 
-            stopMoving();
-            isRetreating = false;
-            isReporting = true;
-            waitUntil = millis() + 3000;
-          }
-
-          PVector home = new PVector(50, 50);
-          println(home);
-          moveBy(home);
-
-          //return to base
-        }
-
-        if (millis() >= waitUntil) {
-          isReporting = false;
-        }
-
-        if (this.stop_state && !isRetreating && !isReporting) {
-          println("moving");
-
-          NodeAI currentNode = graph.get(grid.getNearestNodePosition(oldPosition));
+        // otherwise, find another way I guess?
+      }else{
+        
+          NodeAI currentNode = graph.get(grid.getNearestNodePosition(position));
 
           if (currentNode != null) {
             println("----------------- "+currentNode.position);
 
             NodeAI right = currentNode.right, left = currentNode.left, up = currentNode.up, down = currentNode.down;
+            
 
            // if (!right.visited || !left.visited || !up.visited || !down.visited) {
              
@@ -398,7 +418,66 @@ class Team1 extends Team {
           }
 
           moveOneStep("down");
+
+
+      }
+    
+      
+      return null;
+    }
+    
+    void pathFinding() {
+      
+      
+    }
+    
+    
+    public void updateLogic() {
+      super.updateLogic();
+
+      if (!started) {
+        started = true;
+        NodeAI startingNode = new NodeAI(grid.getNearestNodePosition(startpos));
+        graph.put(startpos, startingNode);
+      }
+
+      if (!this.userControlled) {
+
+        if (this.isRetreating) {
+
+          if (isAtHomebase && !isReporting) {
+
+            stopMoving();
+            isRetreating = false;
+            isReporting = true;
+            waitUntil = millis() + 3000;
+          }
+          println("retreating");
+          
+          // wayfinding here
+        pathFinding();
+
+          //return to base
         }
+
+        if (millis() >= waitUntil) {
+          isReporting = false;
+        }
+
+        if (this.stop_state && !isRetreating && !isReporting && !bumpedIntoTree) {
+          println("moving");
+          moveOneStep();  
+        }else if(bumpedIntoTree){
+
+          NodeAI tmp = graph.get(grid.getNearestNode(position).position);
+          tmp.valid = false;
+           
+
+
+          oldPosition = grid.getNearestNodePosition(oldPosition);
+          moveTo(oldPosition);
+          bumpedIntoTree = false;
+      }
       }
     }
   }
