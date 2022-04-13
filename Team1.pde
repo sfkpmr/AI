@@ -412,9 +412,11 @@ class Team1 extends Team {
       }
        
 
-      return null;
+      
     }
 
+return null;
+ }
 
 
 
@@ -481,7 +483,19 @@ class Team1 extends Team {
 
     public Stack<PVector> dijkstras(PVector start, PVector dest) {
       // dijkstras uses a priority queue for getiing the next frontier node with the lowest cost that will be explored next
-      PriorityQueue<NodeAI> q = new PriorityQueue<>(Comparator.comparingDouble((NodeAI a) -> a.pathCost));
+      PriorityQueue<NodeAI> q = new PriorityQueue<NodeAI>(new Comparator(){
+      @Override
+      public int compare(Object a, Object b){
+       NodeAI anode = (NodeAI) a;
+       NodeAI bnode = (NodeAI) b;
+       
+       return (int)(anode.pathCost - bnode.pathCost
+       );
+        
+      }
+      }
+      
+      );
 
       // initialize all nodes for the algorithm
       for (NodeAI n : graph.values()) {
@@ -526,7 +540,7 @@ class Team1 extends Team {
     }
 
     Stack<PVector> getPath(PVector destination) {
-      Stack<PVector> path = new Stack<>();
+      Stack<PVector> path = new Stack<PVector>();
       path.push(destination);
       println("destination: " + destination);
       NodeAI it = graph.get(destination);
@@ -544,8 +558,19 @@ class Team1 extends Team {
 
     public Stack<PVector> aStar(PVector start, PVector dest) {
       // dijkstras uses a priority queue for getting the next frontier node with the lowest cost that will be explored next
-      PriorityQueue<NodeAI> q = new PriorityQueue<>(Comparator.comparingDouble((NodeAI a) -> a.fCost));
-
+     // PriorityQueue<NodeAI> q = new PriorityQueue<NodeAI>(Comparator.comparingDouble((NodeAI a) -> a.fCost));
+        PriorityQueue<NodeAI> q = new PriorityQueue<NodeAI>(new Comparator(){
+      @Override
+      public int compare(Object a, Object b){
+       NodeAI anode = (NodeAI) a;
+       NodeAI bnode = (NodeAI) b;
+       
+       return (int)(anode.fCost - bnode.fCost
+       );
+        
+      }
+      }
+      );
       // initialize all nodes for the algorithm
       for (NodeAI n : graph.values()) {
         n.pathVisited = false;
