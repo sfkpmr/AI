@@ -272,6 +272,11 @@ class Team1 extends Team {
       this.started = false;
       //this.moving20_120 = true;
     }
+    
+    @Override
+    public HashMap<PVector, NodeAI> getMap(){
+      return graph;
+    }
 
     // Tanken meddelas om kollision med trädet.
     public void message_collision(Tree other) {
