@@ -12,7 +12,7 @@ import ddf.minim.*;
 Minim minim;
 SoundManager soundManager;
 
-boolean debugOn = false;
+boolean debugOn = true;
 boolean pause = false;
 boolean gameOver = false;
 

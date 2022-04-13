@@ -1,10 +1,12 @@
+import java.util.*;
+
 class Team1 extends Team {
 
-  Team1(int team_id, int tank_size, color c, 
-    PVector tank0_startpos, int tank0_id, CannonBall ball0, 
-    PVector tank1_startpos, int tank1_id, CannonBall ball1, 
+  Team1(int team_id, int tank_size, color c,
+    PVector tank0_startpos, int tank0_id, CannonBall ball0,
+    PVector tank1_startpos, int tank1_id, CannonBall ball1,
     PVector tank2_startpos, int tank2_id, CannonBall ball2) {
-    super(team_id, tank_size, c, tank0_startpos, tank0_id, ball0, tank1_startpos, tank1_id, ball1, tank2_startpos, tank2_id, ball2);  
+    super(team_id, tank_size, c, tank0_startpos, tank0_id, ball0, tank1_startpos, tank1_id, ball1, tank2_startpos, tank2_id, ball2);
 
     tanks[0] = new Tank(tank0_id, this, this.tank0_startpos, this.tank_size, ball0);
     tanks[1] = new Tank(tank1_id, this, this.tank1_startpos, this.tank_size, ball1);
@@ -134,7 +136,7 @@ class Team1 extends Team {
     Tank2(int id, Team team, PVector startpos, float diameter, CannonBall ball) {
       super(id, team, startpos, diameter, ball);
 
-      this.started = false; 
+      this.started = false;
 
       //this.isMoving = true;
       //moveTo(grid.getRandomNodePosition());
@@ -195,7 +197,7 @@ class Team1 extends Team {
       }
     }
 
-    //*******************************************************  
+    //*******************************************************
     // Tanken meddelas om den har kommit hem.
     public void message_arrivedAtHomebase() {
       //println("*** Team"+this.team_id+".Tank["+ this.getId() + "].message_isAtHomebase()");
@@ -256,7 +258,7 @@ class Team1 extends Team {
 
   //==================================================
   public class Tank3 extends Tank {
-
+    Stack path;
     boolean started;
     boolean first;
     //boolean moving20_120;
@@ -284,8 +286,8 @@ class Team1 extends Team {
       PVector tempTarget = targetPosition;
       super.arrived();
       println("*** Team"+this.team_id+".Tank["+ this.getId() + "].arrived()");
-      
-      
+
+
       graph.get(grid.getNearestNode(position).position).valid = true;
       graph.get(grid.getNearestNode(position).position).visited = true;
       oldPosition = position;
@@ -334,64 +336,50 @@ class Team1 extends Team {
       return null;
     }
 
- private Node moveOneStep() {
-        //see node?
-       if(!graph.containsKey(grid.getNearestNode(new PVector(0,50,0).add(position)).position)){
-           // addNode
-          graph.put(grid.getNearestNode(new PVector(0,50,0).add(position)).position, new NodeAI(grid.getNearestNode(new PVector(0,50,0).add(position)).position));
-          moveBy(new PVector(0,50,0)); // (go to node)
-return null;
-        // otherwise, find another way I guess?
-        
-       } else if(!graph.containsKey(grid.getNearestNode(new PVector(50,0,0).add(position)).position)){ // and node is valid and seen?
-          // addNode
-          graph.put(grid.getNearestNode(new PVector(50,0,0).add(position)).position, new NodeAI(grid.getNearestNode(new PVector(50,0,0).add(position)).position));
-          moveBy(new PVector(50,0,0)); // (go to node)
-          // 
-    return null;
-        // up
-      }
-      // right
-      if(!graph.containsKey(grid.getNearestNode(new PVector(50,0,0).add(position)).position)){ // and node is valid and seen?
-          // addNode
-          graph.put(grid.getNearestNode(new PVector(50,0,0).add(position)).position, new NodeAI(grid.getNearestNode(new PVector(50,0,0).add(position)).position));
-          moveBy(new PVector(50,0,0)); // (go to node)
-          // 
-    
-        // up
-      }else if(!graph.containsKey(grid.getNearestNode(new PVector(0,-50,0).add(position)).position)){
+    private Node moveOneStep() {
+      //see node?
 
-           // addNode
-          graph.put(grid.getNearestNode(new PVector(0,-50,0).add(position)).position, new NodeAI(grid.getNearestNode(new PVector(0,-50,0).add(position)).position));
-          moveBy(new PVector(0,-50,0)); // (go to node)
-        
+      // right
+      if (!graph.containsKey(grid.getNearestNode(new PVector(50, 0, 0).add(position)).position)) { // and node is valid and seen?
+        // addNode
+        graph.put(grid.getNearestNode(new PVector(50, 0, 0).add(position)).position, new NodeAI(grid.getNearestNode(new PVector(50, 0, 0).add(position)).position));
+        moveBy(new PVector(50, 0, 0)); // (go to node)
+        //
+
+        // up
+      } else if (!graph.containsKey(grid.getNearestNode(new PVector(0, -50, 0).add(position)).position)) {
+
+        // addNode
+        graph.put(grid.getNearestNode(new PVector(0, -50, 0).add(position)).position, new NodeAI(grid.getNearestNode(new PVector(0, -50, 0).add(position)).position));
+        moveBy(new PVector(0, -50, 0)); // (go to node)
+
         //left
-      }else if(!graph.containsKey(grid.getNearestNode(new PVector(-50,0,0).add(position)).position)){
-        
-           // addNode
-          graph.put(grid.getNearestNode(new PVector(-50,0,0).add(position)).position, new NodeAI(grid.getNearestNode(new PVector(-50,0,0).add(position)).position));
-          moveBy(new PVector(-50,0,0)); // (go to node)
+      } else if (!graph.containsKey(grid.getNearestNode(new PVector(-50, 0, 0).add(position)).position)) {
+
+        // addNode
+        graph.put(grid.getNearestNode(new PVector(-50, 0, 0).add(position)).position, new NodeAI(grid.getNearestNode(new PVector(-50, 0, 0).add(position)).position));
+        moveBy(new PVector(-50, 0, 0)); // (go to node)
 
 
         //down
-      }else if(!graph.containsKey(grid.getNearestNode(new PVector(0,50,0).add(position)).position)){
-           // addNode
-          graph.put(grid.getNearestNode(new PVector(0,50,0).add(position)).position, new NodeAI(grid.getNearestNode(new PVector(0,50,0).add(position)).position));
-          moveBy(new PVector(0,50,0)); // (go to node)
+      } else if (!graph.containsKey(grid.getNearestNode(new PVector(0, 50, 0).add(position)).position)) {
+        // addNode
+        graph.put(grid.getNearestNode(new PVector(0, 50, 0).add(position)).position, new NodeAI(grid.getNearestNode(new PVector(0, 50, 0).add(position)).position));
+        moveBy(new PVector(0, 50, 0)); // (go to node)
 
         // otherwise, find another way I guess?
-      }else{
-        
-          NodeAI currentNode = graph.get(grid.getNearestNodePosition(position));
+      } else {
 
-          if (currentNode != null) {
-            println("----------------- "+currentNode.position);
+        NodeAI currentNode = graph.get(grid.getNearestNodePosition(position));
 
-            NodeAI right = currentNode.right, left = currentNode.left, up = currentNode.up, down = currentNode.down;
-            
+        if (currentNode != null) {
+          println("----------------- "+currentNode.position);
 
-           // if (!right.visited || !left.visited || !up.visited || !down.visited) {
-             
+          // NodeAI right = currentNode.right, left = currentNode.left, up = currentNode.up, down = currentNode.down;
+
+
+          // if (!right.visited || !left.visited || !up.visited || !down.visited) {
+
           //  if (right != null && right.visited) {
           //    moveOneStep("right");
           //  } else if (up != null && up.visited) {
@@ -401,8 +389,8 @@ return null;
           //  } else if (left != null && left.visited){
           //    moveOneStep("left");
           //  }
-             
-           // }
+
+          // }
 
           //null checks
 
@@ -415,23 +403,18 @@ return null;
           //  } else if (left != null && left.valid) {
           //    moveOneStep("left");
           //  }
-          }
+        }
 
-          moveOneStep("down");
-
-
+        moveOneStep("down");
       }
-    
-      
+
+
       return null;
     }
-    
-    void pathFinding() {
-      
-      
-    }
-    
-    
+
+
+
+
     public void updateLogic() {
       super.updateLogic();
 
@@ -453,32 +436,187 @@ return null;
             waitUntil = millis() + 3000;
           }
           println("retreating");
-          
+
           // wayfinding here
-        pathFinding();
+          pathFinding();
 
           //return to base
         }
 
         if (millis() >= waitUntil) {
           isReporting = false;
+          this.path = null;
         }
 
         if (this.stop_state && !isRetreating && !isReporting && !bumpedIntoTree) {
           println("moving");
-          moveOneStep();  
-        }else if(bumpedIntoTree){
+          moveOneStep();
+        } else if (bumpedIntoTree) {
 
           NodeAI tmp = graph.get(grid.getNearestNode(position).position);
           tmp.valid = false;
-           
 
 
           oldPosition = grid.getNearestNodePosition(oldPosition);
           moveTo(oldPosition);
+          println("försöker backa från trädet");
           bumpedIntoTree = false;
-      }
+        }
       }
     }
+
+    void pathFinding() {
+
+      if (this.path == null) {
+        println("FINDING PATH MADDATRACKKAhhH");
+        this.path = dijkstras(grid.getNearestNodePosition(this.position), grid.getNearestNodePosition(this.startpos));
+        println(path);
+        this.path = aStar(grid.getNearestNodePosition(this.position), grid.getNearestNodePosition(this.startpos));
+        println(path);
+      }
+    }
+
+    public Stack<PVector> dijkstras(PVector start, PVector dest) {
+      // dijkstras uses a priority queue for getiing the next frontier node with the lowest cost that will be explored next
+      PriorityQueue<NodeAI> q = new PriorityQueue<>(Comparator.comparingDouble((NodeAI a) -> a.pathCost));
+
+      // initialize all nodes for the algorithm
+      for (NodeAI n : graph.values()) {
+        n.path = null;
+        n.pathVisited = false;
+        n.pathCost = Double.POSITIVE_INFINITY;
+      }
+
+      // add the first node from the graph
+      NodeAI first = graph.get(start);
+      first.pathCost = 0;
+
+      q.add(first);
+
+      NodeAI d = graph.get(dest);
+      int exploredNodes = 0;
+      while (!q.isEmpty() && !dest.pathVisited) {
+        NodeAI v = q.remove();
+        exploredNodes++;
+        v.pathVisited = true;
+
+        for (PVector pVec : v.adjacentNodes()) {
+
+          NodeAI next = graph.get(pVec);
+          if (next == null) continue;
+
+          if (next.pathVisited == false) {
+            double cost = v.pathCost + 1;
+
+            if (cost < next.pathCost) {
+              next.pathCost = cost;
+              //
+              next.path = v.position;
+              q.add(next);
+            }
+          }
+        }
+      }
+      String ex = String.format("dijkstra explored %d numder of nodes", exploredNodes);
+      println(ex);
+      return getPath(dest);
+    }
+
+    Stack<PVector> getPath(PVector destination) {
+      Stack<PVector> path = new Stack<>();
+      path.push(destination);
+      println("destination: " + destination);
+      NodeAI it = graph.get(destination);
+      while (it != null) {
+        NodeAI tmp = graph.get(it.path);
+        if (tmp == null) break;
+        println("tmp.position: " + tmp.position);
+        path.push(tmp.position);
+        it = graph.get(tmp.position);
+      }
+      return path;
+    }
+
+
+
+    public Stack<PVector> aStar(PVector start, PVector dest) {
+      // dijkstras uses a priority queue for getting the next frontier node with the lowest cost that will be explored next
+      PriorityQueue<NodeAI> q = new PriorityQueue<>(Comparator.comparingDouble((NodeAI a) -> a.fCost));
+
+      // initialize all nodes for the algorithm
+      for (NodeAI n : graph.values()) {
+        n.pathVisited = false;
+        n.fCost = Double.POSITIVE_INFINITY;
+        n.pathCost = Double.POSITIVE_INFINITY;
+        n.path = null;
+      }
+
+
+
+      // add the first node from the graph
+      NodeAI first = graph.get(start);
+      first.pathCost = 0;
+      first.setFCost(dest);
+      q.add(first);
+
+      NodeAI d = graph.get(dest);
+      int exploredNodes = 0;
+      while (!q.isEmpty() && !dest.pathVisited) {
+        NodeAI v = q.remove();
+        exploredNodes++;
+        v.pathVisited = true;
+
+        for (PVector pVec : v.adjacentNodes()) {
+
+          NodeAI next = graph.get(pVec);
+          if (next == null) continue;
+
+          if (next.pathVisited == false) {
+            double cost = v.pathCost + 1;
+
+            if (cost < next.pathCost) {
+              next.pathCost = cost;
+              next.setFCost(dest);
+              //
+              next.path = v.position;
+              q.add(next);
+            }
+          }
+        }
+      }
+      String ex = String.format("A* explored %d numder of nodes", exploredNodes);
+      println(ex);
+      return getPath(dest);
+    }
+
+
+
+    /*
+
+     while (!q.isEmpty() && dest.notKnown()) {
+     StopVertex v = q.remove();
+     v.setKnown(true);
+     
+     Collection<List<StopVertex.Departure>> adj = v.adjacent.tailMap(v.arrived).values();
+     for (List<StopVertex.Departure> departureList : adj) {
+         for (StopVertex.Departure w : departureList) {
+             if (w.destination.notKnown()) {
+               double cost = w.timeBetweenStations(time);
+               if (cost < w.destination.getGCost()) {
+                   w.destination.setG(cost);
+                   w.destination.arrived = w.arrival;
+                   w.destination.setF(hCost(w.destination, dest));
+                   w.destination.setPath(v, w.getTrip());
+                   q.add(w.destination);
+               }
+             }
+           }
+         }
+       }
+     
+     printPath(dest);
+     printAStar(time, dest);
+     }
+     */
   }
 }
