@@ -271,12 +271,19 @@ class Team1 extends Team {
     Tank3(int id, Team team, PVector startpos, float diameter, CannonBall ball) {
       super(id, team, startpos, diameter, ball);
 
+      for (Node[] nn : grid.nodes) {
+        for (Node n : nn) {
+          NodeAI nai = new NodeAI(n.position);
+          nai.valid = n.position.equals(grid.getNearestNode(new PVector(200, 550, 0)).position) ? false : true;
+          graph.put(n.position, nai);
+        }
+      }
       this.started = false;
       //this.moving20_120 = true;
     }
-    
+
     @Override
-    public HashMap<PVector, NodeAI> getMap(){
+      public HashMap<PVector, NodeAI> getMap() {
       return graph;
     }
 
@@ -500,7 +507,7 @@ class Team1 extends Team {
 
       NodeAI d = graph.get(dest);
       int exploredNodes = 0;
-      while (!q.isEmpty() && !dest.pathVisited) {
+      while (!q.isEmpty() && !d.pathVisited) {
         NodeAI v = q.remove();
         exploredNodes++;
         v.pathVisited = true;
@@ -566,7 +573,7 @@ class Team1 extends Team {
 
       NodeAI d = graph.get(dest);
       int exploredNodes = 0;
-      while (!q.isEmpty() && !dest.pathVisited) {
+      while (!q.isEmpty() && !d.pathVisited) {
         NodeAI v = q.remove();
         exploredNodes++;
         v.pathVisited = true;
@@ -604,20 +611,20 @@ class Team1 extends Team {
      
      Collection<List<StopVertex.Departure>> adj = v.adjacent.tailMap(v.arrived).values();
      for (List<StopVertex.Departure> departureList : adj) {
-         for (StopVertex.Departure w : departureList) {
-             if (w.destination.notKnown()) {
-               double cost = w.timeBetweenStations(time);
-               if (cost < w.destination.getGCost()) {
-                   w.destination.setG(cost);
-                   w.destination.arrived = w.arrival;
-                   w.destination.setF(hCost(w.destination, dest));
-                   w.destination.setPath(v, w.getTrip());
-                   q.add(w.destination);
-               }
-             }
-           }
-         }
-       }
+     for (StopVertex.Departure w : departureList) {
+     if (w.destination.notKnown()) {
+     double cost = w.timeBetweenStations(time);
+     if (cost < w.destination.getGCost()) {
+     w.destination.setG(cost);
+     w.destination.arrived = w.arrival;
+     w.destination.setF(hCost(w.destination, dest));
+     w.destination.setPath(v, w.getTrip());
+     q.add(w.destination);
+     }
+     }
+     }
+     }
+     }
      
      printPath(dest);
      printAStar(time, dest);
