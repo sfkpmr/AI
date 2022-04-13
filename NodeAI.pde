@@ -1,16 +1,30 @@
 class NodeAI extends Node {
-
-  NodeAI right, left, up, down;
-  boolean valid, visited;
+  double pathCost, fCost;
+  PVector path;
+  boolean valid, visited, pathVisited;
 
   NodeAI(PVector position) {
-
     super(position.x, position.y);
-    this.right = null;
-    this.left = null;
-    this.up = null;
-    this.down = null;
+    this.path = null;
     this.valid = false;
     this.visited = false;
+  }
+
+  PVector[] adjacentNodes() {
+
+    PVector left = grid.getNearestNode(new PVector(-50, 0, 0).add(this.position)).position;
+    PVector up = grid.getNearestNode(new PVector(0, -50, 0).add(this.position)).position;
+    PVector right = grid.getNearestNode(new PVector(50, 0, 0).add(this.position)).position;
+    PVector down = grid.getNearestNode(new PVector(0, 50, 0).add(this.position)).position;
+
+    return new PVector[]{left, up, right, down};
+  }
+  
+  void setFCost(PVector dest) {
+    this.fCost = pathCost + hCost(dest);
+  }
+  
+  double hCost(PVector dest){
+    return PVector.dist(this.position, dest);
   }
 }
