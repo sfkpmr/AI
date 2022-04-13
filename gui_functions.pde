@@ -1,3 +1,5 @@
+import java.util.*;
+
 // Initiera användargränssnittet.
 // Används inte.
 void setGUI() {
@@ -37,6 +39,14 @@ void showGUI() {
     // Visa grid.
     fill(205);
     gridDisplay();
+        
+    fill(255, 255, 0);
+    HashMap<PVector, NodeAI> map = allTanks[2].getMap();
+    
+    for (Map.Entry me : map.entrySet()) {
+        PVector abc = (PVector) me.getKey();
+        ellipse(abc.x, abc.y, 5, 5);
+    }
 
     // Visa musposition och den närmaste noden.
     fill(255, 92, 92);

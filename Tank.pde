@@ -822,6 +822,10 @@ class Tank extends Sprite { //<>//
     this.isMoving = false;  
     stopMoving_state();
   }
+  
+  public HashMap<PVector, NodeAI> getMap() {
+    return null;
+  }
 
   //**************************************************
   // Är tänkt att överskuggas (override) i subklassen.
