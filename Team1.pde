@@ -300,23 +300,10 @@ class Team1 extends Team {
       super.arrived();
       println("*** Team"+this.team_id+".Tank["+ this.getId() + "].arrived()");
 
-
-      graph.get(grid.getNearestNode(position).position).valid = true;
       graph.get(grid.getNearestNode(position).position).visited = true;
       oldPosition = grid.getNearestNode(position).position;
 
 
-      //NodeAI startingNode = new NodeAI(grid.getNearestNodePosition(tempTarget));
-
-      //startingNode.right = grid.getNearestNode(new PVector(50,0,0));
-
-      //if (!a.equals(b)) {
-      //  graph.put(oldPosition, startingNode);
-      //}
-
-      //moveTo(new PVector(int(random(width)),int(random(height))));
-      //moveTo(grid.getRandomNode Position());
-      //this.isMoving = false;
     }
 
 
@@ -331,7 +318,7 @@ class Team1 extends Team {
           return null;
 
           // otherwise, find another way I guess?
-        } else if (graph.get(grid.getNearestNode(new PVector(50, 0, 0).add(position)).position).valid) { // and node is valid and seen?
+        } else if (graph.get(grid.getNearestNode(new PVector(50, 0, 0).add(position)).position).valid && !graph.get(grid.getNearestNode(new PVector(50, 0, 0).add(position)).position).position.equals(graph.get(grid.getNearestNode(position).position).position) ){ // and node is valid and seen?
 
           moveBy(new PVector(50, 0, 0)); // (go to node)
           return null;
@@ -373,7 +360,7 @@ class Team1 extends Team {
 
 
         //down
-        if (graph.get(grid.getNearestNode(new PVector(0, 50, 0).add(position)).position).valid) {
+        if (graph.get(grid.getNearestNode(new PVector(0, 50, 0).add(position)).position).valid && !graph.get(grid.getNearestNode(new PVector(0, 50, 0).add(position)).position).position.equals(graph.get(grid.getNearestNode(position).position).position)) {
           // addNode
 
           moveBy(new PVector(0, 50, 0)); // (go to node)
@@ -382,20 +369,20 @@ class Team1 extends Team {
           // otherwise, find another way I guess?
         }
         // left
-        else if (graph.get(grid.getNearestNode(new PVector(-50, 0, 0).add(position)).position).valid) {
+        else if (graph.get(grid.getNearestNode(new PVector(-50, 0, 0).add(position)).position).valid && !graph.get(grid.getNearestNode(new PVector(-50, 0, 0).add(position)).position).position.equals(graph.get(grid.getNearestNode(position).position).position)) {
 
           // addNode
           moveBy(new PVector(-50, 0, 0)); // (go to node)
 
 
           //up
-        } else if (graph.get(grid.getNearestNode(new PVector(0, -50, 0).add(position)).position).valid) {
+        } else if (graph.get(grid.getNearestNode(new PVector(0, -50, 0).add(position)).position).valid && !graph.get(grid.getNearestNode(new PVector(0, -50, 0).add(position)).position).position.equals(graph.get(grid.getNearestNode(position).position).position)) {
           println("valid top");
 
           moveBy(new PVector(0, -50, 0)); // (go to node)
 
           //right
-        } else if (graph.get(grid.getNearestNode(new PVector(50, 0, 0).add(position)).position).valid) { // and node is valid and seen?
+        } else if (graph.get(grid.getNearestNode(new PVector(50, 0, 0).add(position)).position).valid && !graph.get(grid.getNearestNode(new PVector(0, 50, 0).add(position)).position).position.equals(graph.get(grid.getNearestNode(position).position).position)) { // and node is valid and seen?
 
           moveBy(new PVector(50, 0, 0)); // (go to node)
         } else {
