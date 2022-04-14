@@ -333,14 +333,14 @@ class Team1 extends Team {
      */
     void moveOneStep() {
 
-      if (canMove(goDirection("down"))) {
+     /* if (canMove(goDirection("down"))) {
         moveBy(new PVector(0, 50, 0));
         return;
       } else if (canMove(goDirection("right"))) {
         moveBy(new PVector(50, 0, 0));
         return;
       }
-      
+      */
       if (canMoveToDirection("right")) {
         saveAndWalk(goDirection("right"), 50, 0);
       } else if (canMoveToDirection("up")) {
@@ -368,6 +368,7 @@ class Team1 extends Team {
 
     private boolean canMove(PVector direction) {
       NodeAI temp = graph.get(direction);
+  
       return (temp.valid && !temp.position.equals(graph.get(goDirection("")).position));
     }
 
