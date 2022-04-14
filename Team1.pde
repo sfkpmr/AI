@@ -267,13 +267,15 @@ class Team1 extends Team {
     Tank3(int id, Team team, PVector startpos, float diameter, CannonBall ball) {
       super(id, team, startpos, diameter, ball);
 
-      //for (Node[] nn : grid.nodes) {
-      //  for (Node n : nn) {
-      //    NodeAI nai = new NodeAI(n.position);
-      //    // nai.valid = n.position.equals(grid.getNearestNode(new PVector(200, 550, 0)).position) ? false : true;
-      //    graph.put(n.position, nai);
-      //  }
-      //}
+      /*
+      for (Node[] nn : grid.nodes) {
+       for (Node n : nn) {
+       NodeAI nai = new NodeAI(n.position);
+       // nai.valid = n.position.equals(grid.getNearestNode(new PVector(200, 550, 0)).position) ? false : true;
+       graph.put(n.position, nai);
+       }
+       }
+       */
       this.started = false;
     }
 
@@ -295,8 +297,6 @@ class Team1 extends Team {
 
       graph.get(grid.getNearestNode(position).position).visited = true;
       oldPosition = grid.getNearestNode(position).position;
-
-
     }
 
 
@@ -374,6 +374,7 @@ class Team1 extends Team {
     public void updateLogic() {
       super.updateLogic();
 
+      //When starting a starting node is added to our graph of all nodes.
       if (!started) {
         started = true;
         NodeAI startingNode = new NodeAI(grid.getNearestNodePosition(startpos));
@@ -383,6 +384,13 @@ class Team1 extends Team {
       if (!this.userControlled) {
 
         if (this.isRetreating) {
+
+          /*
+          The default state of the agent is to efficiently search the world, with a couple of exceptions;
+           when encountering a tree it should return to the previous position,
+           when encountering an enemy it should return to base, and once it returns to base,
+           it should report for 3 seconds.
+           */
 
           pathFinding();
 
