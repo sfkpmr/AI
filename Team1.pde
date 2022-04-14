@@ -321,6 +321,23 @@ class Team1 extends Team {
 
 
     private Node moveOneStep() {
+      
+
+       if (graph.get(grid.getNearestNode(new PVector(0, 50, 0).add(position)).position).valid && !graph.get(grid.getNearestNode(new PVector(0, 50, 0).add(position)).position).position.equals(graph.get(grid.getNearestNode(position).position).position) ) {
+          // addNode
+
+          moveBy(new PVector(0, 50, 0)); // (go to node)
+          println("valid bot" + millis());
+          return null;
+
+          // otherwise, find another way I guess?
+        } else if (graph.get(grid.getNearestNode(new PVector(50, 0, 0).add(position)).position).valid) { // and node is valid and seen?
+
+          moveBy(new PVector(50, 0, 0)); // (go to node)
+          return null;
+        }
+      
+      
 
       // right
       if (!graph.containsKey(grid.getNearestNode(new PVector(50, 0, 0).add(position)).position)) { // and node is valid and seen?
@@ -437,6 +454,7 @@ class Team1 extends Team {
           bumpedIntoTree = false;
         }
       }
+      println("stop state: " + stop_state);
     }
 
     void pathFinding() {

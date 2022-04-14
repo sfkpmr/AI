@@ -6,7 +6,7 @@ class NodeAI extends Node {
   NodeAI(PVector position) {
     super(position.x, position.y);
     this.path = null;
-    this.valid = false;
+    this.valid = true;
     this.visited = false;
   }
 
