@@ -272,13 +272,13 @@ class Team1 extends Team {
     Tank3(int id, Team team, PVector startpos, float diameter, CannonBall ball) {
       super(id, team, startpos, diameter, ball);
 
-      /*  for (Node[] nn : grid.nodes) {
-       for (Node n : nn) {
-       NodeAI nai = new NodeAI(n.position);
-       nai.valid = n.position.equals(grid.getNearestNode(new PVector(200, 550, 0)).position) ? false : true;
-       graph.put(n.position, nai);
-       }
-       }*/
+      for (Node[] nn : grid.nodes) {
+        for (Node n : nn) {
+          NodeAI nai = new NodeAI(n.position);
+          nai.valid = n.position.equals(grid.getNearestNode(new PVector(200, 550, 0)).position) ? false : true;
+          graph.put(n.position, nai);
+        }
+      }
       this.started = false;
       //this.moving20_120 = true;
     }
