@@ -1,8 +1,9 @@
+import java.util.*;
+
 // Initiera användargränssnittet.
 // Används inte.
 void setGUI() {
   println("*** setGUI()- Användargränsnittet skapas.");
-
 }
 //**************************************************
 // Gör så att allt i användargränssnittet (GUI) visas.
@@ -16,8 +17,8 @@ void showGUI() {
   textSize(24);
   text(remainingTime, width/2, 25);
   textSize(14);
-  
-  
+
+
   if (userControl) {
     // Draw an ellipse at the mouse position
     PVector mouse = new PVector(mouseX, mouseY);
@@ -38,18 +39,32 @@ void showGUI() {
     fill(205);
     gridDisplay();
 
+    HashMap<PVector, NodeAI> map = allTanks[2].getMap();
+
+    for (Map.Entry me : map.entrySet()) {
+      PVector abc = (PVector) me.getKey();
+
+      if (!map.get(abc).valid) {
+        fill(255, 0, 0);
+      } else {
+        fill(0, 0, 255);
+      }
+
+      ellipse(abc.x, abc.y, 5, 5);
+    }
+
     // Visa musposition och den närmaste noden.
     fill(255, 92, 92);
     ellipse(mouseX, mouseY, 5, 5);
     grid.displayNearestNode(mouseX, mouseY);
   }
-  
+
   if (pause) {
     textSize(36);
     fill(30);
     text("Paused!", width/2-100, height/2);
   }
-  
+
   if (gameOver) {
     textSize(36);
     fill(30);
@@ -57,7 +72,7 @@ void showGUI() {
   }
 }
 //**************************************************
-// Gör så att textfälten visas och uppdateras. 
+// Gör så att textfälten visas och uppdateras.
 // Används inte.
 void showOutput() {
 }
