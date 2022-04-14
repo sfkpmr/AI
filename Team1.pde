@@ -439,7 +439,6 @@ class Team1 extends Team {
     void pathFinding() {
 
       if (this.desiredPath == null) {
-        println("FINDING PATH MADDATRACKKAhhH");
         this.desiredPath = dijkstras(grid.getNearestNodePosition(this.position), grid.getNearestNodePosition(this.startpos));
         println(desiredPath);
         this.desiredPath = aStar(grid.getNearestNodePosition(this.position), grid.getNearestNodePosition(this.startpos));
