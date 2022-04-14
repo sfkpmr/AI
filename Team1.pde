@@ -297,94 +297,81 @@ class Team1 extends Team {
 
       graph.get(grid.getNearestNode(position).position).visited = true;
       oldPosition = grid.getNearestNode(position).position;
-
-
     }
 
 
-    private Node moveOneStep() {
+    boolean canMoveToDirection(String dir) {
+      return !graph.containsKey(goDirection(dir));
+    }
 
+    PVector goDirection(String dir) {
+      PVector temp = new PVector(0, 0, 0);
 
-      if (graph.get(grid.getNearestNode(new PVector(0, 50, 0).add(position)).position).valid && !graph.get(grid.getNearestNode(new PVector(0, 50, 0).add(position)).position).position.equals(graph.get(grid.getNearestNode(position).position).position) ) {
-        // addNode
-
-        moveBy(new PVector(0, 50, 0)); // (go to node)
-        return null;
-
-        // otherwise, find another way I guess?
-      } else if (graph.get(grid.getNearestNode(new PVector(50, 0, 0).add(position)).position).valid) { // and node is valid and seen?
-
-        moveBy(new PVector(50, 0, 0)); // (go to node)
-        return null;
+      switch (dir) {
+      case "down":
+        temp = grid.getNearestNode(temp.add(position).add(0, 50, 0)).position;
+        break;
+      case "left":
+        temp = grid.getNearestNode(temp.add(position).add(-50, 0, 0)).position;
+        break;
+      case "up":
+        temp = grid.getNearestNode(temp.add(position).add(0, -50, 0)).position;
+        break;
+      case "right":
+        temp = grid.getNearestNode(temp.add(position).add(50, 0, 0)).position;
+        break;
+      default:
+        temp = grid.getNearestNode(temp.add(position)).position;
       }
+      return temp;
+    }
 
 
+    /**
+     * Our strategy for walking
+     */
+    void moveOneStep() {
 
-      // right
-      if (!graph.containsKey(grid.getNearestNode(new PVector(50, 0, 0).add(position)).position)) { // and node is valid and seen?
-        // addNode
-        graph.put(grid.getNearestNode(new PVector(50, 0, 0).add(position)).position, new NodeAI(grid.getNearestNode(new PVector(50, 0, 0).add(position)).position));
-        moveBy(new PVector(50, 0, 0)); // (go to node)
-        //
-
-        // up
-      } else if (!graph.containsKey(grid.getNearestNode(new PVector(0, -50, 0).add(position)).position)) {
-
-        // addNode
-        println("up");
-        graph.put(grid.getNearestNode(new PVector(0, -50, 0).add(position)).position, new NodeAI(grid.getNearestNode(new PVector(0, -50, 0).add(position)).position));
-        moveBy(new PVector(0, -50, 0)); // (go to node)
-
-        //left
-      } else if (!graph.containsKey(grid.getNearestNode(new PVector(-50, 0, 0).add(position)).position)) {
-
-        // addNode
-        graph.put(grid.getNearestNode(new PVector(-50, 0, 0).add(position)).position, new NodeAI(grid.getNearestNode(new PVector(-50, 0, 0).add(position)).position));
-        moveBy(new PVector(-50, 0, 0)); // (go to node)
-
-
-        //down
-      } else if (!graph.containsKey(grid.getNearestNode(new PVector(0, 50, 0).add(position)).position)) {
-        // addNode
-        graph.put(grid.getNearestNode(new PVector(0, 50, 0).add(position)).position, new NodeAI(grid.getNearestNode(new PVector(0, 50, 0).add(position)).position));
-        moveBy(new PVector(0, 50, 0)); // (go to node)
-
-        // otherwise, find another way I guess?
+      if (canMove(goDirection("down"))) {
+        moveBy(new PVector(0, 50, 0));
+        return;
+      } else if (canMove(goDirection("right"))) {
+        moveBy(new PVector(50, 0, 0));
+        return;
+      }
+      
+      if (canMoveToDirection("right")) {
+        saveAndWalk(goDirection("right"), 50, 0);
+      } else if (canMoveToDirection("up")) {
+        saveAndWalk(goDirection("up"), 0, -50);
+      } else if (canMoveToDirection("left")) {
+        saveAndWalk(goDirection("left"), -50, 0);
+      } else if (canMoveToDirection("down")) {
+        saveAndWalk(goDirection("down"), 0, 50);
       } else {
-
-
-        //down
-        if (graph.get(grid.getNearestNode(new PVector(0, 50, 0).add(position)).position).valid && !graph.get(grid.getNearestNode(new PVector(0, 50, 0).add(position)).position).position.equals(graph.get(grid.getNearestNode(position).position).position)) {
-          // addNode
-
-          moveBy(new PVector(0, 50, 0)); // (go to node)
-          println("valid bot");
-
-          // otherwise, find another way I guess?
-        }
-        // left
-        else if (graph.get(grid.getNearestNode(new PVector(-50, 0, 0).add(position)).position).valid && !graph.get(grid.getNearestNode(new PVector(-50, 0, 0).add(position)).position).position.equals(graph.get(grid.getNearestNode(position).position).position)) {
-
-          // addNode
-          moveBy(new PVector(-50, 0, 0)); // (go to node)
-
-
-          //up
-        } else if (graph.get(grid.getNearestNode(new PVector(0, -50, 0).add(position)).position).valid && !graph.get(grid.getNearestNode(new PVector(0, -50, 0).add(position)).position).position.equals(graph.get(grid.getNearestNode(position).position).position)) {
-          println("valid top");
-
-          moveBy(new PVector(0, -50, 0)); // (go to node)
-
-          //right
-        } else if (graph.get(grid.getNearestNode(new PVector(50, 0, 0).add(position)).position).valid && !graph.get(grid.getNearestNode(new PVector(0, 50, 0).add(position)).position).position.equals(graph.get(grid.getNearestNode(position).position).position)) { // and node is valid and seen?
-
-          moveBy(new PVector(50, 0, 0)); // (go to node)
+        println("knows everything");
+        if (canMove(goDirection("down"))) {
+          moveBy(new PVector(0, 50, 0));
+        } else if (canMove(goDirection("left"))) {
+          moveBy(new PVector(-50, 0, 0));
+        } else if (canMove(goDirection("up"))) {
+          moveBy(new PVector(0, -50, 0));
+        } else if (canMove(goDirection("right"))) {
+          moveBy(new PVector(50, 0, 0));
         } else {
           println("error in pathfinding for primary search");
         }
       }
+    }
 
-      return null;
+    private boolean canMove(PVector direction) {
+      NodeAI temp = graph.get(direction);
+      return (temp.valid && !temp.position.equals(graph.get(goDirection("")).position));
+    }
+
+    private void saveAndWalk(PVector walkTo, int i, int i1) {
+      graph.put(walkTo, new NodeAI(walkTo));
+      moveBy(new PVector(i, i1, 0));
     }
 
 
