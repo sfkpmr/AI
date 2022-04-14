@@ -267,15 +267,16 @@ class Team1 extends Team {
     Tank3(int id, Team team, PVector startpos, float diameter, CannonBall ball) {
       super(id, team, startpos, diameter, ball);
 
+      /*
       for (Node[] nn : grid.nodes) {
-        for (Node n : nn) {
-          NodeAI nai = new NodeAI(n.position);
-          // nai.valid = n.position.equals(grid.getNearestNode(new PVector(200, 550, 0)).position) ? false : true;
-          graph.put(n.position, nai);
-        }
-      }
+       for (Node n : nn) {
+       NodeAI nai = new NodeAI(n.position);
+       // nai.valid = n.position.equals(grid.getNearestNode(new PVector(200, 550, 0)).position) ? false : true;
+       graph.put(n.position, nai);
+       }
+       }
+       */
       this.started = false;
-      //this.moving20_120 = true;
     }
 
     @Override
@@ -287,7 +288,6 @@ class Team1 extends Team {
     public void message_collision(Tree other) {
       println("*** Team"+this.team_id+".Tank["+ this.getId() + "].collision(Tree)");
       bumpedIntoTree = true;
-      //rotateTo(grid.getRandomNodePosition());
     }
 
     public void arrived() {
@@ -303,6 +303,7 @@ class Team1 extends Team {
     boolean canMoveToDirection(String dir) {
       return !graph.containsKey(goDirection(dir));
     }
+
 
     PVector goDirection(String dir) {
       PVector temp = new PVector(0, 0, 0);
@@ -348,6 +349,7 @@ class Team1 extends Team {
         saveAndWalk(goDirection("left"), -50, 0);
       } else if (canMoveToDirection("down")) {
         saveAndWalk(goDirection("down"), 0, 50);
+
       } else {
         println("knows everything");
         if (canMove(goDirection("down"))) {
@@ -379,6 +381,7 @@ class Team1 extends Team {
     public void updateLogic() {
       super.updateLogic();
 
+      //When starting a starting node is added to our graph of all nodes.
       if (!started) {
         started = true;
         NodeAI startingNode = new NodeAI(grid.getNearestNodePosition(startpos));
@@ -388,6 +391,13 @@ class Team1 extends Team {
       if (!this.userControlled) {
 
         if (this.isRetreating) {
+
+          /*
+          The default objective of the agent is to efficiently search the world, with a couple of exceptions;
+           when encountering a tree it should return to the previous position,
+           when encountering an enemy it should return to base, and once it returns to base,
+           it should report for 3 seconds.
+           */
 
           pathFinding();
 
@@ -420,13 +430,11 @@ class Team1 extends Team {
           bumpedIntoTree = false;
         }
       }
-      // println("stop state: " + stop_state);
     }
 
     void pathFinding() {
 
       if (this.desiredPath == null) {
-        println("FINDING PATH MADDATRACKKAhhH");
         this.desiredPath = dijkstras(grid.getNearestNodePosition(this.position), grid.getNearestNodePosition(this.startpos));
         println(desiredPath);
         this.desiredPath = aStar(grid.getNearestNodePosition(this.position), grid.getNearestNodePosition(this.startpos));
