@@ -265,20 +265,20 @@ class Team1 extends Team {
     PVector tempTarget = null;
     PVector oldPosition = positionPrev;
     boolean bumpedIntoTree = false;
- 
+
 
     HashMap<PVector, NodeAI> graph = new HashMap<PVector, NodeAI>();
 
     Tank3(int id, Team team, PVector startpos, float diameter, CannonBall ball) {
       super(id, team, startpos, diameter, ball);
 
-    /*  for (Node[] nn : grid.nodes) {
-        for (Node n : nn) {
-          NodeAI nai = new NodeAI(n.position);
-          nai.valid = n.position.equals(grid.getNearestNode(new PVector(200, 550, 0)).position) ? false : true;
-          graph.put(n.position, nai);
-        }
-      }*/
+      /*  for (Node[] nn : grid.nodes) {
+       for (Node n : nn) {
+       NodeAI nai = new NodeAI(n.position);
+       nai.valid = n.position.equals(grid.getNearestNode(new PVector(200, 550, 0)).position) ? false : true;
+       graph.put(n.position, nai);
+       }
+       }*/
       this.started = false;
       //this.moving20_120 = true;
     }
@@ -300,11 +300,11 @@ class Team1 extends Team {
       super.arrived();
       println("*** Team"+this.team_id+".Tank["+ this.getId() + "].arrived()");
 
-      
+
       graph.get(grid.getNearestNode(position).position).valid = true;
       graph.get(grid.getNearestNode(position).position).visited = true;
       oldPosition = grid.getNearestNode(position).position;
-     
+
 
       //NodeAI startingNode = new NodeAI(grid.getNearestNodePosition(tempTarget));
 
@@ -320,7 +320,7 @@ class Team1 extends Team {
     }
 
 
- private Node moveOneStep() {
+    private Node moveOneStep() {
 
       // right
       if (!graph.containsKey(grid.getNearestNode(new PVector(50, 0, 0).add(position)).position)) { // and node is valid and seen?
@@ -352,45 +352,42 @@ class Team1 extends Team {
         moveBy(new PVector(0, 50, 0)); // (go to node)
 
         // otherwise, find another way I guess?
-      }else{
-     
-      
-      //down
-      if(graph.get(grid.getNearestNode(new PVector(0,50,0).add(position)).position).valid){
-           // addNode
-        
-          moveBy(new PVector(0,50,0)); // (go to node)
+      } else {
+
+
+        //down
+        if (graph.get(grid.getNearestNode(new PVector(0, 50, 0).add(position)).position).valid) {
+          // addNode
+
+          moveBy(new PVector(0, 50, 0)); // (go to node)
           println("valid bot");
 
-        // otherwise, find another way I guess?
+          // otherwise, find another way I guess?
+        }
+        // left
+        else if (graph.get(grid.getNearestNode(new PVector(-50, 0, 0).add(position)).position).valid) {
+
+          // addNode
+          moveBy(new PVector(-50, 0, 0)); // (go to node)
+
+
+          //up
+        } else if (graph.get(grid.getNearestNode(new PVector(0, -50, 0).add(position)).position).valid) {
+          println("valid top");
+
+          moveBy(new PVector(0, -50, 0)); // (go to node)
+
+          //right
+        } else if (graph.get(grid.getNearestNode(new PVector(50, 0, 0).add(position)).position).valid) { // and node is valid and seen?
+
+          moveBy(new PVector(50, 0, 0)); // (go to node)
+        } else {
+          println("error in pathfinding for primary search");
+        }
       }
-      // left
-      else if(graph.get(grid.getNearestNode(new PVector(-50,0,0).add(position)).position).valid){
-        
-           // addNode
-          moveBy(new PVector(-50,0,0)); // (go to node)
 
-
-        //up
-      }else if(graph.get(grid.getNearestNode(new PVector(0,-50,0).add(position)).position).valid){
-println("valid top");
-       
-          moveBy(new PVector(0,-50,0)); // (go to node)
-        
-        //right
-      }else if(graph.get(grid.getNearestNode(new PVector(50,0,0).add(position)).position).valid){ // and node is valid and seen?
-
-          moveBy(new PVector(50,0,0)); // (go to node)
-          
-      } else{
-        println("error in pathfinding for primary search");
-      
-      }
-          
+      return null;
     }
-
-return null;
- }
 
 
 
@@ -434,7 +431,7 @@ return null;
 
           NodeAI tmp = graph.get(grid.getNearestNode(position).position);
           tmp.valid = false;
-          
+
           moveTo(oldPosition);
           println("försöker backa från trädet");
           bumpedIntoTree = false;
@@ -455,18 +452,17 @@ return null;
 
     public Stack<PVector> dijkstras(PVector start, PVector dest) {
       // dijkstras uses a priority queue for getiing the next frontier node with the lowest cost that will be explored next
-      PriorityQueue<NodeAI> q = new PriorityQueue<NodeAI>(new Comparator(){
-      @Override
-      public int compare(Object a, Object b){
-       NodeAI anode = (NodeAI) a;
-       NodeAI bnode = (NodeAI) b;
-       
-       return (int)(anode.pathCost - bnode.pathCost
-       );
-        
+      PriorityQueue<NodeAI> q = new PriorityQueue<NodeAI>(new Comparator() {
+        @Override
+          public int compare(Object a, Object b) {
+          NodeAI anode = (NodeAI) a;
+          NodeAI bnode = (NodeAI) b;
+
+          return (int)(anode.pathCost - bnode.pathCost
+            );
+        }
       }
-      }
-      
+
       );
 
       // initialize all nodes for the algorithm
@@ -530,17 +526,16 @@ return null;
 
     public Stack<PVector> aStar(PVector start, PVector dest) {
       // dijkstras uses a priority queue for getting the next frontier node with the lowest cost that will be explored next
-     // PriorityQueue<NodeAI> q = new PriorityQueue<NodeAI>(Comparator.comparingDouble((NodeAI a) -> a.fCost));
-        PriorityQueue<NodeAI> q = new PriorityQueue<NodeAI>(new Comparator(){
-      @Override
-      public int compare(Object a, Object b){
-       NodeAI anode = (NodeAI) a;
-       NodeAI bnode = (NodeAI) b;
-       
-       return (int)(anode.fCost - bnode.fCost
-       );
-        
-      }
+      // PriorityQueue<NodeAI> q = new PriorityQueue<NodeAI>(Comparator.comparingDouble((NodeAI a) -> a.fCost));
+      PriorityQueue<NodeAI> q = new PriorityQueue<NodeAI>(new Comparator() {
+        @Override
+          public int compare(Object a, Object b) {
+          NodeAI anode = (NodeAI) a;
+          NodeAI bnode = (NodeAI) b;
+
+          return (int)(anode.fCost - bnode.fCost
+            );
+        }
       }
       );
       // initialize all nodes for the algorithm
