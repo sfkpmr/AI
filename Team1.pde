@@ -294,7 +294,7 @@ class Team1 extends Team {
       PVector tempTarget = targetPosition;
       super.arrived();
       println("*** Team"+this.team_id+".Tank["+ this.getId() + "].arrived()");
-
+      graph.get(grid.getNearestNode(position).position).valid = true;
       graph.get(grid.getNearestNode(position).position).visited = true;
       oldPosition = grid.getNearestNode(position).position;
     }
@@ -333,14 +333,8 @@ class Team1 extends Team {
      */
     void moveOneStep() {
 
-      if (canMove(goDirection("down"))) {
-        moveBy(new PVector(0, 50, 0));
-        return;
-      } else if (canMove(goDirection("right"))) {
-        moveBy(new PVector(50, 0, 0));
-        return;
-      }
-      
+
+
       if (canMoveToDirection("right")) {
         saveAndWalk(goDirection("right"), 50, 0);
       } else if (canMoveToDirection("up")) {
@@ -349,7 +343,6 @@ class Team1 extends Team {
         saveAndWalk(goDirection("left"), -50, 0);
       } else if (canMoveToDirection("down")) {
         saveAndWalk(goDirection("down"), 0, 50);
-
       } else {
         println("knows everything");
         if (canMove(goDirection("down"))) {
@@ -385,6 +378,7 @@ class Team1 extends Team {
       if (!started) {
         started = true;
         NodeAI startingNode = new NodeAI(grid.getNearestNodePosition(startpos));
+        startingNode.valid = true;
         graph.put(startpos, startingNode);
       }
 
@@ -456,11 +450,9 @@ class Team1 extends Team {
           NodeAI anode = (NodeAI) a;
           NodeAI bnode = (NodeAI) b;
 
-          return (int)(anode.pathCost - bnode.pathCost
-            );
+          return Double.compare(anode.pathCost, bnode.pathCost);
         }
       }
-
       );
 
       // initialize all nodes for the algorithm
@@ -483,10 +475,10 @@ class Team1 extends Team {
         exploredNodes++;
         v.pathVisited = true;
 
-        for (PVector pVec : v.adjacentNodes()) {
+        for (PVector pVec : v.adjacentNodeVectors()) {
 
           NodeAI next = graph.get(pVec);
-          if (next == null) continue;
+          if (next == null || !next.valid) continue;
 
           if (next.pathVisited == false) {
             double cost = v.pathCost + 1;
@@ -525,14 +517,13 @@ class Team1 extends Team {
     public Stack<PVector> aStar(PVector start, PVector dest) {
       // dijkstras uses a priority queue for getting the next frontier node with the lowest cost that will be explored next
       // PriorityQueue<NodeAI> q = new PriorityQueue<NodeAI>(Comparator.comparingDouble((NodeAI a) -> a.fCost));
-      PriorityQueue<NodeAI> q = new PriorityQueue<NodeAI>(new Comparator() {
+      PriorityQueue<NodeAI> q = new PriorityQueue<NodeAI>(new Comparator()
+      {
         @Override
           public int compare(Object a, Object b) {
           NodeAI anode = (NodeAI) a;
           NodeAI bnode = (NodeAI) b;
-
-          return (int)(anode.fCost - bnode.fCost
-            );
+          return Double.compare(anode.fCost, bnode.fCost);
         }
       }
       );
@@ -552,26 +543,26 @@ class Team1 extends Team {
       first.setFCost(dest);
       q.add(first);
 
-      NodeAI d = graph.get(dest);
+      NodeAI goal = graph.get(dest);
       int exploredNodes = 0;
-      while (!q.isEmpty() && !d.pathVisited) {
-        NodeAI v = q.remove();
+      while (!q.isEmpty() && !goal.pathVisited) {
+        NodeAI expanding = q.remove();
         exploredNodes++;
-        v.pathVisited = true;
+        expanding.pathVisited = true;
 
-        for (PVector pVec : v.adjacentNodes()) {
+        for (PVector pVec : expanding.adjacentNodeVectors()) {
 
           NodeAI next = graph.get(pVec);
-          if (next == null) continue;
+          if (next == null || !next.valid) continue;
 
           if (next.pathVisited == false) {
-            double cost = v.pathCost + 1;
+            double cost = expanding.pathCost + 1;
 
             if (cost < next.pathCost) {
               next.pathCost = cost;
               next.setFCost(dest);
               //
-              next.path = v.position;
+              next.path = expanding.position;
               q.add(next);
             }
           }
