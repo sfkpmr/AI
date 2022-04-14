@@ -258,29 +258,25 @@ class Team1 extends Team {
 
   //==================================================
   public class Tank3 extends Tank {
-    Stack path;
-    boolean started;
-    boolean first;
-    //boolean moving20_120;
-    PVector tempTarget = null;
-    PVector oldPosition = positionPrev;
-    boolean bumpedIntoTree = false;
-
+    Stack<PVector> desiredPath;
+    boolean started, first, bumpedIntoTree = false;
+    PVector tempTarget = null, oldPosition = positionPrev;
 
     HashMap<PVector, NodeAI> graph = new HashMap<PVector, NodeAI>();
 
     Tank3(int id, Team team, PVector startpos, float diameter, CannonBall ball) {
       super(id, team, startpos, diameter, ball);
 
-      /*  for (Node[] nn : grid.nodes) {
+      /*
+      for (Node[] nn : grid.nodes) {
        for (Node n : nn) {
        NodeAI nai = new NodeAI(n.position);
-       nai.valid = n.position.equals(grid.getNearestNode(new PVector(200, 550, 0)).position) ? false : true;
+       // nai.valid = n.position.equals(grid.getNearestNode(new PVector(200, 550, 0)).position) ? false : true;
        graph.put(n.position, nai);
        }
-       }*/
+       }
+       */
       this.started = false;
-      //this.moving20_120 = true;
     }
 
     @Override
@@ -292,101 +288,84 @@ class Team1 extends Team {
     public void message_collision(Tree other) {
       println("*** Team"+this.team_id+".Tank["+ this.getId() + "].collision(Tree)");
       bumpedIntoTree = true;
-      //rotateTo(grid.getRandomNodePosition());
     }
 
     public void arrived() {
       PVector tempTarget = targetPosition;
       super.arrived();
       println("*** Team"+this.team_id+".Tank["+ this.getId() + "].arrived()");
-
-
       graph.get(grid.getNearestNode(position).position).valid = true;
       graph.get(grid.getNearestNode(position).position).visited = true;
       oldPosition = grid.getNearestNode(position).position;
-
-
-      //NodeAI startingNode = new NodeAI(grid.getNearestNodePosition(tempTarget));
-
-      //startingNode.right = grid.getNearestNode(new PVector(50,0,0));
-
-      //if (!a.equals(b)) {
-      //  graph.put(oldPosition, startingNode);
-      //}
-
-      //moveTo(new PVector(int(random(width)),int(random(height))));
-      //moveTo(grid.getRandomNode Position());
-      //this.isMoving = false;
     }
 
 
-    private Node moveOneStep() {
-
-      // right
-      if (!graph.containsKey(grid.getNearestNode(new PVector(50, 0, 0).add(position)).position)) { // and node is valid and seen?
-        // addNode
-        graph.put(grid.getNearestNode(new PVector(50, 0, 0).add(position)).position, new NodeAI(grid.getNearestNode(new PVector(50, 0, 0).add(position)).position));
-        moveBy(new PVector(50, 0, 0)); // (go to node)
-        //
-
-        // up
-      } else if (!graph.containsKey(grid.getNearestNode(new PVector(0, -50, 0).add(position)).position)) {
-
-        // addNode
-        println("up");
-        graph.put(grid.getNearestNode(new PVector(0, -50, 0).add(position)).position, new NodeAI(grid.getNearestNode(new PVector(0, -50, 0).add(position)).position));
-        moveBy(new PVector(0, -50, 0)); // (go to node)
-
-        //left
-      } else if (!graph.containsKey(grid.getNearestNode(new PVector(-50, 0, 0).add(position)).position)) {
-
-        // addNode
-        graph.put(grid.getNearestNode(new PVector(-50, 0, 0).add(position)).position, new NodeAI(grid.getNearestNode(new PVector(-50, 0, 0).add(position)).position));
-        moveBy(new PVector(-50, 0, 0)); // (go to node)
+    boolean canMoveToDirection(String dir) {
+      return !graph.containsKey(goDirection(dir));
+    }
 
 
-        //down
-      } else if (!graph.containsKey(grid.getNearestNode(new PVector(0, 50, 0).add(position)).position)) {
-        // addNode
-        graph.put(grid.getNearestNode(new PVector(0, 50, 0).add(position)).position, new NodeAI(grid.getNearestNode(new PVector(0, 50, 0).add(position)).position));
-        moveBy(new PVector(0, 50, 0)); // (go to node)
+    PVector goDirection(String dir) {
+      PVector temp = new PVector(0, 0, 0);
 
-        // otherwise, find another way I guess?
+      switch (dir) {
+      case "down":
+        temp = grid.getNearestNode(temp.add(position).add(0, 50, 0)).position;
+        break;
+      case "left":
+        temp = grid.getNearestNode(temp.add(position).add(-50, 0, 0)).position;
+        break;
+      case "up":
+        temp = grid.getNearestNode(temp.add(position).add(0, -50, 0)).position;
+        break;
+      case "right":
+        temp = grid.getNearestNode(temp.add(position).add(50, 0, 0)).position;
+        break;
+      default:
+        temp = grid.getNearestNode(temp.add(position)).position;
+      }
+      return temp;
+    }
+
+
+    /**
+     * Our strategy for walking
+     */
+    void moveOneStep() {
+
+      if (canMoveToDirection("right")) {
+        saveAndWalk(goDirection("right"), 50, 0);
+      } else if (canMoveToDirection("up")) {
+        saveAndWalk(goDirection("up"), 0, -50);
+      } else if (canMoveToDirection("left")) {
+        saveAndWalk(goDirection("left"), -50, 0);
+      } else if (canMoveToDirection("down")) {
+        saveAndWalk(goDirection("down"), 0, 50);
       } else {
-
-
-        //down
-        if (graph.get(grid.getNearestNode(new PVector(0, 50, 0).add(position)).position).valid) {
-          // addNode
-
-          moveBy(new PVector(0, 50, 0)); // (go to node)
-          println("valid bot");
-
-          // otherwise, find another way I guess?
-        }
-        // left
-        else if (graph.get(grid.getNearestNode(new PVector(-50, 0, 0).add(position)).position).valid) {
-
-          // addNode
-          moveBy(new PVector(-50, 0, 0)); // (go to node)
-
-
-          //up
-        } else if (graph.get(grid.getNearestNode(new PVector(0, -50, 0).add(position)).position).valid) {
-          println("valid top");
-
-          moveBy(new PVector(0, -50, 0)); // (go to node)
-
-          //right
-        } else if (graph.get(grid.getNearestNode(new PVector(50, 0, 0).add(position)).position).valid) { // and node is valid and seen?
-
-          moveBy(new PVector(50, 0, 0)); // (go to node)
+        println("knows everything");
+        if (canMove(goDirection("down"))) {
+          moveBy(new PVector(0, 50, 0));
+        } else if (canMove(goDirection("left"))) {
+          moveBy(new PVector(-50, 0, 0));
+        } else if (canMove(goDirection("up"))) {
+          moveBy(new PVector(0, -50, 0));
+        } else if (canMove(goDirection("right"))) {
+          moveBy(new PVector(50, 0, 0));
         } else {
           println("error in pathfinding for primary search");
         }
       }
+    }
 
-      return null;
+    private boolean canMove(PVector direction) {
+      NodeAI temp = graph.get(direction);
+  
+      return (temp.valid && !temp.position.equals(graph.get(goDirection("")).position));
+    }
+
+    private void saveAndWalk(PVector walkTo, int i, int i1) {
+      graph.put(walkTo, new NodeAI(walkTo));
+      moveBy(new PVector(i, i1, 0));
     }
 
 
@@ -394,9 +373,11 @@ class Team1 extends Team {
     public void updateLogic() {
       super.updateLogic();
 
+      //When starting a starting node is added to our graph of all nodes.
       if (!started) {
         started = true;
         NodeAI startingNode = new NodeAI(grid.getNearestNodePosition(startpos));
+        startingNode.valid = true;
         graph.put(startpos, startingNode);
       }
 
@@ -404,30 +385,35 @@ class Team1 extends Team {
 
         if (this.isRetreating) {
 
-          if (isAtHomebase && !isReporting) {
+          /*
+          The default objective of the agent is to efficiently search the world, with a couple of exceptions;
+           when encountering a tree it should return to the previous position,
+           when encountering an enemy it should return to base, and once it returns to base,
+           it should report for 3 seconds.
+           */
 
+          pathFinding();
+
+          if (isAtHomebase && !isReporting) {
+            waitUntil = millis() + 3000;
+            println("Reporting! Current world time: " + millis() + " waitUntil: " + waitUntil  + " " + remainingTime);
             stopMoving();
             isRetreating = false;
             isReporting = true;
-            waitUntil = millis() + 3000;
           }
-          println("retreating");
-
-          // wayfinding here
-          pathFinding();
-
-          //return to base
         }
 
-        if (millis() >= waitUntil) {
+        if (millis() >= waitUntil && isReporting ) {
+          println("Done reporting at: "+millis() + " " + remainingTime);
           isReporting = false;
-          this.path = null;
+          stop_state = true;
+          this.desiredPath = null;
         }
 
         if (this.stop_state && !isRetreating && !isReporting && !bumpedIntoTree) {
           println("moving");
           moveOneStep();
-        } else if (bumpedIntoTree) {
+        } else if (bumpedIntoTree && !isRetreating && !isReporting) {
 
           NodeAI tmp = graph.get(grid.getNearestNode(position).position);
           tmp.valid = false;
@@ -441,12 +427,17 @@ class Team1 extends Team {
 
     void pathFinding() {
 
-      if (this.path == null) {
-        println("FINDING PATH MADDATRACKKAhhH");
-        this.path = dijkstras(grid.getNearestNodePosition(this.position), grid.getNearestNodePosition(this.startpos));
-        println(path);
-        this.path = aStar(grid.getNearestNodePosition(this.position), grid.getNearestNodePosition(this.startpos));
-        println(path);
+      if (this.desiredPath == null) {
+        this.desiredPath = dijkstras(grid.getNearestNodePosition(this.position), grid.getNearestNodePosition(this.startpos));
+        println(desiredPath);
+        this.desiredPath = aStar(grid.getNearestNodePosition(this.position), grid.getNearestNodePosition(this.startpos));
+        println(desiredPath);
+        desiredPath.pop();
+      }
+
+      if (!isMoving) {
+        PVector var2 = desiredPath.pop();
+        moveTo(var2);
       }
     }
 
@@ -458,11 +449,9 @@ class Team1 extends Team {
           NodeAI anode = (NodeAI) a;
           NodeAI bnode = (NodeAI) b;
 
-          return (int)(anode.pathCost - bnode.pathCost
-            );
+          return Double.compare(anode.pathCost, bnode.pathCost);
         }
       }
-
       );
 
       // initialize all nodes for the algorithm
@@ -485,10 +474,10 @@ class Team1 extends Team {
         exploredNodes++;
         v.pathVisited = true;
 
-        for (PVector pVec : v.adjacentNodes()) {
+        for (PVector pVec : v.adjacentNodeVectors()) {
 
           NodeAI next = graph.get(pVec);
-          if (next == null) continue;
+          if (next == null || !next.valid) continue;
 
           if (next.pathVisited == false) {
             double cost = v.pathCost + 1;
@@ -510,12 +499,12 @@ class Team1 extends Team {
     Stack<PVector> getPath(PVector destination) {
       Stack<PVector> path = new Stack<PVector>();
       path.push(destination);
-      println("destination: " + destination);
+      //   println("destination: " + destination);
       NodeAI it = graph.get(destination);
       while (it != null) {
         NodeAI tmp = graph.get(it.path);
         if (tmp == null) break;
-        println("tmp.position: " + tmp.position);
+        //    println("tmp.position: " + tmp.position);
         path.push(tmp.position);
         it = graph.get(tmp.position);
       }
@@ -527,14 +516,13 @@ class Team1 extends Team {
     public Stack<PVector> aStar(PVector start, PVector dest) {
       // dijkstras uses a priority queue for getting the next frontier node with the lowest cost that will be explored next
       // PriorityQueue<NodeAI> q = new PriorityQueue<NodeAI>(Comparator.comparingDouble((NodeAI a) -> a.fCost));
-      PriorityQueue<NodeAI> q = new PriorityQueue<NodeAI>(new Comparator() {
+      PriorityQueue<NodeAI> q = new PriorityQueue<NodeAI>(new Comparator()
+      {
         @Override
           public int compare(Object a, Object b) {
           NodeAI anode = (NodeAI) a;
           NodeAI bnode = (NodeAI) b;
-
-          return (int)(anode.fCost - bnode.fCost
-            );
+          return Double.compare(anode.fCost, bnode.fCost);
         }
       }
       );
@@ -554,26 +542,26 @@ class Team1 extends Team {
       first.setFCost(dest);
       q.add(first);
 
-      NodeAI d = graph.get(dest);
+      NodeAI goal = graph.get(dest);
       int exploredNodes = 0;
-      while (!q.isEmpty() && !d.pathVisited) {
-        NodeAI v = q.remove();
+      while (!q.isEmpty() && !goal.pathVisited) {
+        NodeAI expanding = q.remove();
         exploredNodes++;
-        v.pathVisited = true;
+        expanding.pathVisited = true;
 
-        for (PVector pVec : v.adjacentNodes()) {
+        for (PVector pVec : expanding.adjacentNodeVectors()) {
 
           NodeAI next = graph.get(pVec);
-          if (next == null) continue;
+          if (next == null || !next.valid) continue;
 
           if (next.pathVisited == false) {
-            double cost = v.pathCost + 1;
+            double cost = expanding.pathCost + 1;
 
             if (cost < next.pathCost) {
               next.pathCost = cost;
               next.setFCost(dest);
               //
-              next.path = v.position;
+              next.path = expanding.position;
               q.add(next);
             }
           }
@@ -583,35 +571,5 @@ class Team1 extends Team {
       println(ex);
       return getPath(dest);
     }
-
-
-
-    /*
-
-     while (!q.isEmpty() && dest.notKnown()) {
-     StopVertex v = q.remove();
-     v.setKnown(true);
-     
-     Collection<List<StopVertex.Departure>> adj = v.adjacent.tailMap(v.arrived).values();
-     for (List<StopVertex.Departure> departureList : adj) {
-     for (StopVertex.Departure w : departureList) {
-     if (w.destination.notKnown()) {
-     double cost = w.timeBetweenStations(time);
-     if (cost < w.destination.getGCost()) {
-     w.destination.setG(cost);
-     w.destination.arrived = w.arrival;
-     w.destination.setF(hCost(w.destination, dest));
-     w.destination.setPath(v, w.getTrip());
-     q.add(w.destination);
-     }
-     }
-     }
-     }
-     }
-     
-     printPath(dest);
-     printAStar(time, dest);
-     }
-     */
   }
 }

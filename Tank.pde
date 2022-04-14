@@ -63,7 +63,7 @@ class Tank extends Sprite { //<>//
   boolean isRetreating; //flyr
   boolean isReporting; //rapporterar fiende tanks
   
-  int waitUntil;
+  int waitUntil = Integer.MAX_VALUE;
 
   boolean hasShot; // Tanken kan bara skjuta om den har laddat kanonen, hasShot=true.
   CannonBall ball;

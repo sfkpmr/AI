@@ -10,7 +10,7 @@ class NodeAI extends Node {
     this.visited = false;
   }
 
-  PVector[] adjacentNodes() {
+  PVector[] adjacentNodeVectors() {
 
     PVector left = grid.getNearestNode(new PVector(-50, 0, 0).add(this.position)).position;
     PVector up = grid.getNearestNode(new PVector(0, -50, 0).add(this.position)).position;
