@@ -267,15 +267,14 @@ class Team1 extends Team {
     Tank3(int id, Team team, PVector startpos, float diameter, CannonBall ball) {
       super(id, team, startpos, diameter, ball);
 
-      for (Node[] nn : grid.nodes) {
-        for (Node n : nn) {
-          NodeAI nai = new NodeAI(n.position);
-          // nai.valid = n.position.equals(grid.getNearestNode(new PVector(200, 550, 0)).position) ? false : true;
-          graph.put(n.position, nai);
-        }
-      }
+      //for (Node[] nn : grid.nodes) {
+      //  for (Node n : nn) {
+      //    NodeAI nai = new NodeAI(n.position);
+      //    // nai.valid = n.position.equals(grid.getNearestNode(new PVector(200, 550, 0)).position) ? false : true;
+      //    graph.put(n.position, nai);
+      //  }
+      //}
       this.started = false;
-      //this.moving20_120 = true;
     }
 
     @Override
@@ -287,7 +286,6 @@ class Team1 extends Team {
     public void message_collision(Tree other) {
       println("*** Team"+this.team_id+".Tank["+ this.getId() + "].collision(Tree)");
       bumpedIntoTree = true;
-      //rotateTo(grid.getRandomNodePosition());
     }
 
     public void arrived() {
@@ -303,22 +301,6 @@ class Team1 extends Team {
 
 
     private Node moveOneStep() {
-
-
-      if (graph.get(grid.getNearestNode(new PVector(0, 50, 0).add(position)).position).valid && !graph.get(grid.getNearestNode(new PVector(0, 50, 0).add(position)).position).position.equals(graph.get(grid.getNearestNode(position).position).position) ) {
-        // addNode
-
-        moveBy(new PVector(0, 50, 0)); // (go to node)
-        return null;
-
-        // otherwise, find another way I guess?
-      } else if (graph.get(grid.getNearestNode(new PVector(50, 0, 0).add(position)).position).valid) { // and node is valid and seen?
-
-        moveBy(new PVector(50, 0, 0)); // (go to node)
-        return null;
-      }
-
-
 
       // right
       if (!graph.containsKey(grid.getNearestNode(new PVector(50, 0, 0).add(position)).position)) { // and node is valid and seen?
@@ -433,7 +415,6 @@ class Team1 extends Team {
           bumpedIntoTree = false;
         }
       }
-      // println("stop state: " + stop_state);
     }
 
     void pathFinding() {
