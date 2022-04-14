@@ -386,7 +386,7 @@ class Team1 extends Team {
         if (this.isRetreating) {
 
           /*
-          The default state of the agent is to efficiently search the world, with a couple of exceptions;
+          The default objective of the agent is to efficiently search the world, with a couple of exceptions;
            when encountering a tree it should return to the previous position,
            when encountering an enemy it should return to base, and once it returns to base,
            it should report for 3 seconds.
