@@ -299,11 +299,9 @@ class Team1 extends Team {
       oldPosition = grid.getNearestNode(position).position;
     }
 
-
     boolean canMoveToDirection(String dir) {
       return !graph.containsKey(goDirection(dir));
     }
-
 
     PVector goDirection(String dir) {
       PVector temp = new PVector(0, 0, 0);
@@ -327,9 +325,10 @@ class Team1 extends Team {
       return temp;
     }
 
-
-    /**
-     * Our strategy for walking
+    /*
+     Our strategy for searching the map is divided into two parts. If there are adjacent nodes that have not been visisted before,
+     then we try to move to one such node in the following order: right, up, left, down. However,
+     if all adjacent nodes have already been visited, then we try to move to the node to the down, left, up or right, in that order.
      */
     void moveOneStep() {
 
@@ -342,7 +341,7 @@ class Team1 extends Team {
       } else if (canMoveToDirection("down")) {
         saveAndWalk(goDirection("down"), 0, 50);
       } else {
-        println("knows everything");
+        println("Knows everything");
         if (canMove(goDirection("down"))) {
           moveBy(new PVector(0, 50, 0));
         } else if (canMove(goDirection("left"))) {
@@ -352,14 +351,14 @@ class Team1 extends Team {
         } else if (canMove(goDirection("right"))) {
           moveBy(new PVector(50, 0, 0));
         } else {
-          println("error in pathfinding for primary search");
+          println("Error in pathfinding for primary search.");
         }
       }
     }
 
     private boolean canMove(PVector direction) {
       NodeAI temp = graph.get(direction);
-  
+
       return (temp.valid && !temp.position.equals(graph.get(goDirection("")).position));
     }
 
@@ -368,12 +367,13 @@ class Team1 extends Team {
       moveBy(new PVector(i, i1, 0));
     }
 
-
-
+    /*
+     The default objective of the agent is to efficiently search the world, with a couple of exceptions;
+     when encountering a tree it should return to the previous position and reevaluate,
+     when encountering an enemy it should return to base and report for 3 seconds.
+     */
     public void updateLogic() {
-      super.updateLogic();
 
-      //When starting a starting node is added to our graph of all nodes.
       if (!started) {
         started = true;
         NodeAI startingNode = new NodeAI(grid.getNearestNodePosition(startpos));
@@ -385,18 +385,11 @@ class Team1 extends Team {
 
         if (this.isRetreating) {
 
-          /*
-          The default objective of the agent is to efficiently search the world, with a couple of exceptions;
-           when encountering a tree it should return to the previous position,
-           when encountering an enemy it should return to base, and once it returns to base,
-           it should report for 3 seconds.
-           */
-
           pathFinding();
 
           if (isAtHomebase && !isReporting) {
             waitUntil = millis() + 3000;
-            println("Reporting! Current world time: " + millis() + " waitUntil: " + waitUntil  + " " + remainingTime);
+            println("Reporting! Current world time: " + millis() + " waitUntil: " + waitUntil + " " + remainingTime);
             stopMoving();
             isRetreating = false;
             isReporting = true;
@@ -425,6 +418,7 @@ class Team1 extends Team {
       }
     }
 
+    //The tank generates an efficient path home when it begins its retreat, and then moves one node every time it is not moving.
     void pathFinding() {
 
       if (this.desiredPath == null) {
@@ -442,7 +436,7 @@ class Team1 extends Team {
     }
 
     public Stack<PVector> dijkstras(PVector start, PVector dest) {
-      // dijkstras uses a priority queue for getiing the next frontier node with the lowest cost that will be explored next
+      // Dijkstra's uses a priority queue for getting the next frontier node with the lowest cost that will be explored next.
       PriorityQueue<NodeAI> q = new PriorityQueue<NodeAI>(new Comparator() {
         @Override
           public int compare(Object a, Object b) {
@@ -454,14 +448,14 @@ class Team1 extends Team {
       }
       );
 
-      // initialize all nodes for the algorithm
+      // Initialize all nodes for the algorithm.
       for (NodeAI n : graph.values()) {
         n.path = null;
         n.pathVisited = false;
         n.pathCost = Double.POSITIVE_INFINITY;
       }
 
-      // add the first node from the graph
+      // Add the first node from the graph.
       NodeAI first = graph.get(start);
       first.pathCost = 0;
 
@@ -491,7 +485,7 @@ class Team1 extends Team {
           }
         }
       }
-      String ex = String.format("dijkstra explored %d numder of nodes", exploredNodes);
+      String ex = String.format("Dijkstra explored %d numder of nodes", exploredNodes);
       println(ex);
       return getPath(dest);
     }
@@ -511,10 +505,8 @@ class Team1 extends Team {
       return path;
     }
 
-
-
     public Stack<PVector> aStar(PVector start, PVector dest) {
-      // dijkstras uses a priority queue for getting the next frontier node with the lowest cost that will be explored next
+      // Dijkstra's uses a priority queue for getting the next frontier node with the lowest cost that will be explored next.
       // PriorityQueue<NodeAI> q = new PriorityQueue<NodeAI>(Comparator.comparingDouble((NodeAI a) -> a.fCost));
       PriorityQueue<NodeAI> q = new PriorityQueue<NodeAI>(new Comparator()
       {
@@ -526,7 +518,7 @@ class Team1 extends Team {
         }
       }
       );
-      // initialize all nodes for the algorithm
+      // Initialize all nodes for the algorithm
       for (NodeAI n : graph.values()) {
         n.pathVisited = false;
         n.fCost = Double.POSITIVE_INFINITY;
@@ -534,9 +526,7 @@ class Team1 extends Team {
         n.path = null;
       }
 
-
-
-      // add the first node from the graph
+      // Add the first node from the graph
       NodeAI first = graph.get(start);
       first.pathCost = 0;
       first.setFCost(dest);
