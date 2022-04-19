@@ -547,10 +547,9 @@ class Team1 extends Team {
     that is defined as the euclidian distance from the current node to the starting 
     position, which the tank has in memory. 
     
-    
     Based on the explanation from: 
     Mark Allen Weiss. Data Structures and Algorithm Analysis in Java. 
-    Pearson Education, third edition, 2012, p.392
+    Pearson Education, third edition, 2012, p. 399.
 
     @return   Stack with the nodes that the tank needs to go to in order to get to the home base.
     */ 
