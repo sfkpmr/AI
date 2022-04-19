@@ -457,7 +457,7 @@ class Team1 extends Team {
     
     Based on the explanation from: 
     Mark Allen Weiss. Data Structures and Algorithm Analysis in Java. 
-    Pearson Education, third edition, 2012, p.392
+    Pearson Education, third edition, 2012, p.399.
 
     @return   Stack with the nodes that the tank needs to go to in order to get to the home base.
     */ 
