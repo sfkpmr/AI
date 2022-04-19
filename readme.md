@@ -9,6 +9,9 @@ Projektlänk: https://github.com/sfkpmr/AI
 Requires Processing v4.
 Requires the Minim ddf library
 
+## Testing:
+Install Processing v4. Install the Minim library through Sketch > Import library > Add library. Then hit run.
+
 ## Notes:
 Tank 3 works, the others will not due to hardcoded changes in GUI functions, lines 53-65.
 
