@@ -1,4 +1,15 @@
 
+/*
+
+Inlämingsuppgift 1 för AI - VT22
+
+Grupp 5
+Simon Eklundh
+Max Nyström
+Marcus Wallén
+
+*/
+
 // call to Team updateLogic()
 void updateTeamsLogic() {
   teams[0].updateLogic();

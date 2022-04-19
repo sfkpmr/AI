@@ -1,3 +1,14 @@
+/*
+
+Inlämingsuppgift 1 för AI - VT22
+
+Grupp 5
+Simon Eklundh
+Max Nyström
+Marcus Wallén
+
+*/
+
 class Team2 extends Team {
 
   Team2(int team_id, int tank_size, color c, 

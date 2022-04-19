@@ -1,4 +1,15 @@
 /*
+
+Inlämingsuppgift 1 för AI - VT22
+
+Grupp 5
+Simon Eklundh
+Max Nyström
+Marcus Wallén
+
+*/
+
+/*
 Denna FSM används inte.
 
      _  _(o)_(o)_  _

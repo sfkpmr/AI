@@ -1,3 +1,14 @@
+/*
+
+Inlämingsuppgift 1 för AI - VT22
+
+Grupp 5
+Simon Eklundh
+Max Nyström
+Marcus Wallén
+
+*/
+
 class Node {
   // A node object knows about its location in the grid 
   // as well as its size with the variables x,y,w,h

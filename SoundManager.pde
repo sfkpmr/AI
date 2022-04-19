@@ -1,4 +1,15 @@
 /*
+
+Inlämingsuppgift 1 för AI - VT22
+
+Grupp 5
+Simon Eklundh
+Max Nyström
+Marcus Wallén
+
+*/
+
+/*
     This class uses Minim. When using Processing.js, we don't have 
     access to Minim so we have an equivalent class, SoundManager.js
     that handles audio.
