@@ -279,6 +279,8 @@ class Team1 extends Team {
       super(id, team, startpos, diameter, ball);
 
       /*
+      Code for testing (gives the tank all nodes in memory in advance)
+
       for (Node[] nn : grid.nodes) {
        for (Node n : nn) {
        NodeAI nai = new NodeAI(n.position);
@@ -446,8 +448,22 @@ class Team1 extends Team {
       }
     }
 
+    /** 
+
+    Algorithm that finds the closest path between two Nodes given two PVectors.
+    Using a graph that the tanks holds in memory, expands the cheapest routes first
+    until it finds the closest path home or until no path is found. The cost to 
+    traverse the graph is 1 per edge. The cheapest route is the path with the lowest cost.
+    
+    Based on the explanation from: 
+    Mark Allen Weiss. Data Structures and Algorithm Analysis in Java. 
+    Pearson Education, third edition, 2012, p.392
+
+    @return   Stack with the nodes that the tank needs to go to in order to get to the home base.
+    */ 
     public Stack<PVector> dijkstras(PVector start, PVector dest) {
-      // Dijkstra's uses a priority queue for getting the next frontier node with the lowest cost that will be explored next.
+      // Dijkstra's uses a priority queue for getting the next frontier node with 
+      // the lowest cost that will be explored next
       PriorityQueue<NodeAI> q = new PriorityQueue<NodeAI>(new Comparator() {
         @Override
           public int compare(Object a, Object b) {
@@ -459,29 +475,34 @@ class Team1 extends Team {
       }
       );
 
-      // Initialize all nodes for the algorithm.
+      // Reset costs and path for all nodes
       for (NodeAI n : graph.values()) {
         n.path = null;
         n.pathVisited = false;
         n.pathCost = Double.POSITIVE_INFINITY;
       }
 
-      // Add the first node from the graph.
+      // Add the node we are standing on as the starting node in the graph
       NodeAI first = graph.get(start);
       first.pathCost = 0;
 
+      // Initialize the algorithm by seting the start node first in the queue
       q.add(first);
-
-      NodeAI d = graph.get(dest);
+      NodeAI goal = graph.get(dest);
+      // unnecessery int for dijkstra's algo, but is used to get a print out of the nr of nodes the algorithm explored
       int exploredNodes = 0;
-      while (!q.isEmpty() && !d.pathVisited) {
-        NodeAI v = q.remove();
+
+
+      while (!q.isEmpty() && !goal.pathVisited) {
         exploredNodes++;
+        
+        NodeAI v = q.remove();
         v.pathVisited = true;
 
         for (PVector pVec : v.adjacentNodeVectors()) {
 
           NodeAI next = graph.get(pVec);
+          // if the path doesn't exist in memory or is invalid (i.e. cannot be walked on) then ignore this iteration
           if (next == null || !next.valid) continue;
 
           if (next.pathVisited == false) {
@@ -516,8 +537,25 @@ class Team1 extends Team {
       return path;
     }
 
+
+/** 
+    Algorithm that finds the closest path between two Nodes given two PVectors.
+    Using a graph that the tanks holds in memory, expands the cheapest routes first
+    until it finds the closest path home or until no path is found. 
+    
+    The cost to traverse the graph is 1 per edge and A* also uses a heuristic function 
+    that is defined as the euclidian distance from the current node to the starting 
+    position, which the tank has in memory. 
+    
+    
+    Based on the explanation from: 
+    Mark Allen Weiss. Data Structures and Algorithm Analysis in Java. 
+    Pearson Education, third edition, 2012, p.392
+
+    @return   Stack with the nodes that the tank needs to go to in order to get to the home base.
+    */ 
     public Stack<PVector> aStar(PVector start, PVector dest) {
-      // Dijkstra's uses a priority queue for getting the next frontier node with the lowest cost that will be explored next.
+      // A* uses a priority queue for getting the next frontier node with the lowest cost that will be explored next.
       // PriorityQueue<NodeAI> q = new PriorityQueue<NodeAI>(Comparator.comparingDouble((NodeAI a) -> a.fCost));
       PriorityQueue<NodeAI> q = new PriorityQueue<NodeAI>(new Comparator()
       {
@@ -529,7 +567,7 @@ class Team1 extends Team {
         }
       }
       );
-      // Initialize all nodes for the algorithm
+      // Reset costs and path for all nodes
       for (NodeAI n : graph.values()) {
         n.pathVisited = false;
         n.fCost = Double.POSITIVE_INFINITY;
@@ -537,13 +575,15 @@ class Team1 extends Team {
         n.path = null;
       }
 
-      // Add the first node from the graph
+      // Initialize the algorithm by seting the start node first in the queue
       NodeAI first = graph.get(start);
       first.pathCost = 0;
       first.setFCost(dest);
       q.add(first);
 
+
       NodeAI goal = graph.get(dest);
+      // unnecessery int for A*, but is used to get a print out of the nr of nodes the algorithm explored
       int exploredNodes = 0;
       while (!q.isEmpty() && !goal.pathVisited) {
         NodeAI expanding = q.remove();
@@ -553,6 +593,7 @@ class Team1 extends Team {
         for (PVector pVec : expanding.adjacentNodeVectors()) {
 
           NodeAI next = graph.get(pVec);
+          // if the path doesn't exist in memory or is invalid (i.e. cannot be walked on) then ignore this iteration
           if (next == null || !next.valid) continue;
 
           if (next.pathVisited == false) {
@@ -561,7 +602,7 @@ class Team1 extends Team {
             if (cost < next.pathCost) {
               next.pathCost = cost;
               next.setFCost(dest);
-              //
+              
               next.path = expanding.position;
               q.add(next);
             }
