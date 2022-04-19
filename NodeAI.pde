@@ -1,3 +1,14 @@
+/*
+
+Inlämingsuppgift 1 för AI - VT22
+
+Grupp 5
+Simon Eklundh
+Max Nyström
+Marcus Wallén
+
+*/
+
 class NodeAI extends Node {
   double pathCost, fCost;
   PVector path;
