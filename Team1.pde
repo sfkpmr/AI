@@ -42,6 +42,7 @@ class Team1 extends Team {
       addSensor(us_front);
 
       started = false;
+      
     }
 
     public void initialize() {
@@ -269,6 +270,7 @@ class Team1 extends Team {
 
   //==================================================
   public class Tank3 extends Tank {
+    Sensor us_front; //ultrasonic_sensor front
     Stack<PVector> desiredPath;
     boolean started, first, bumpedIntoTree = false;
     PVector tempTarget = null, oldPosition = positionPrev;
@@ -277,6 +279,8 @@ class Team1 extends Team {
 
     Tank3(int id, Team team, PVector startpos, float diameter, CannonBall ball) {
       super(id, team, startpos, diameter, ball);
+  us_front = getSensor("ULTRASONIC_FRONT");
+      addSensor(us_front);
 
       /*
       Code for testing (gives the tank all nodes in memory in advance)

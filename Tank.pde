@@ -1184,14 +1184,14 @@ class Tank extends Sprite { //<>//
           stroke(0, 0, 255); 
           PVector sens = (s.readValue().obj().position);
 
-          //println("============");
-          //println("("+sens.x + " , "+sens.y+")");
-          //ellipse(sens.x, sens.y, 10,10);
+          println("============");
+          println("("+sens.x + " , "+sens.y+")");
+          ellipse(sens.x, sens.y, 10,10);
 
           if ((sens != null && !this.isSpinning && !isImmobilized)) {
             line(this.position.x, this.position.y, sens.x, sens.y);
             ellipse(sens.x, sens.y, 10, 10);
-            //println("Tank" + this.team.getId() + ":"+this.id + " ( " + sens.x + ", "+ sens.y + " )");
+            println("Tank" + this.team.getId() + ":"+this.id + " ( " + sens.x + ", "+ sens.y + " )");
           }
         }
       }
