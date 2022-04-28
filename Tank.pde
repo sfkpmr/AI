@@ -1129,9 +1129,17 @@ class Tank extends Sprite { //<>//
     ellipse(x, y, 50, 50);
     strokeWeight(1);
     line(x, y, x+25, y);
-
     fill(this.team.getColor(), 255); 
     this.turret.display();
+  }
+  
+  void drawFoV(){
+    float searchDist = 200f;
+    float fov = PApplet.PI/3;
+    fill(0, 255, 0, 32);
+    stroke(0, 128, 0, 64);
+    strokeWeight(1);
+    arc(0, 0, searchDist*2, searchDist*2, -fov/2, fov/2, PApplet.PIE);
   }
 
   //**************************************************
@@ -1142,10 +1150,10 @@ class Tank extends Sprite { //<>//
     translate(this.position.x, this.position.y);
 
     rotate(this.heading);
-
+    
     //image(img, 20, 0);
     drawTank(0, 0);
-
+    drawFoV();
     if (debugOn) {
       noFill();
       strokeWeight(2);
