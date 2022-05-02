@@ -9,7 +9,7 @@ Marcus Wallén
 
 */
 
-class Tank extends Sprite { //<>//
+class Tank extends Sprite { //<>// //<>// //<>// //<>//
   int id;
   //String name; //Sprite
   int team_id;
@@ -1191,6 +1191,8 @@ class Tank extends Sprite { //<>//
           strokeWeight(1);
           stroke(0, 0, 255); 
           PVector sens = (s.readValue().obj().position);
+          
+          //println("Hhaha" + s.readValue().obj());
 
           println("============");
           println("("+sens.x + " , "+sens.y+")");
@@ -1198,7 +1200,7 @@ class Tank extends Sprite { //<>//
 
           if ((sens != null && !this.isSpinning && !isImmobilized)) {
             line(this.position.x, this.position.y, sens.x, sens.y);
-            ellipse(sens.x, sens.y, 10, 10);
+         //   ellipse(sens.x, sens.y, 100, 100);
             println("Tank" + this.team.getId() + ":"+this.id + " ( " + sens.x + ", "+ sens.y + " )");
           }
         }
