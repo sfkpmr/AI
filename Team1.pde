@@ -1,13 +1,13 @@
 /*
 
-Inlämingsuppgift 1 för AI - VT22
-
-Grupp 5
-Simon Eklundh
-Max Nyström
-Marcus Wallén
-
-*/
+ Inlämingsuppgift 1 för AI - VT22
+ 
+ Grupp 5
+ Simon Eklundh
+ Max Nyström
+ Marcus Wallén
+ 
+ */
 
 import java.util.*;
 
@@ -42,7 +42,6 @@ class Team1 extends Team {
       addSensor(us_front);
 
       started = false;
-      
     }
 
     public void initialize() {
@@ -279,13 +278,13 @@ class Team1 extends Team {
 
     Tank3(int id, Team team, PVector startpos, float diameter, CannonBall ball) {
       super(id, team, startpos, diameter, ball);
-  us_front = getSensor("ULTRASONIC_FRONT");
+      us_front = getSensor("ULTRASONIC_FRONT");
       addSensor(us_front);
 
       /*
       Code for testing (gives the tank all nodes in memory in advance)
-
-      for (Node[] nn : grid.nodes) {
+       
+       for (Node[] nn : grid.nodes) {
        for (Node n : nn) {
        NodeAI nai = new NodeAI(n.position);
        // nai.valid = n.position.equals(grid.getNearestNode(new PVector(200, 550, 0)).position) ? false : true;
@@ -452,21 +451,21 @@ class Team1 extends Team {
       }
     }
 
-    /** 
-
-    Algorithm that finds the closest path between two Nodes given two PVectors.
-    Using a graph that the tanks holds in memory, expands the cheapest routes first
-    until it finds the closest path home or until no path is found. The cost to 
-    traverse the graph is 1 per edge. The cheapest route is the path with the lowest cost.
-    
-    Based on the explanation from: 
-    Mark Allen Weiss. Data Structures and Algorithm Analysis in Java. 
-    Pearson Education, third edition, 2012, p.399.
-
-    @return   Stack with the nodes that the tank needs to go to in order to get to the home base.
-    */ 
+    /**
+     
+     Algorithm that finds the closest path between two Nodes given two PVectors.
+     Using a graph that the tanks holds in memory, expands the cheapest routes first
+     until it finds the closest path home or until no path is found. The cost to
+     traverse the graph is 1 per edge. The cheapest route is the path with the lowest cost.
+     
+     Based on the explanation from:
+     Mark Allen Weiss. Data Structures and Algorithm Analysis in Java.
+     Pearson Education, third edition, 2012, p.399.
+     
+     @return   Stack with the nodes that the tank needs to go to in order to get to the home base.
+     */
     public Stack<PVector> dijkstras(PVector start, PVector dest) {
-      // Dijkstra's uses a priority queue for getting the next frontier node with 
+      // Dijkstra's uses a priority queue for getting the next frontier node with
       // the lowest cost that will be explored next
       PriorityQueue<NodeAI> q = new PriorityQueue<NodeAI>(new Comparator() {
         @Override
@@ -499,7 +498,7 @@ class Team1 extends Team {
 
       while (!q.isEmpty() && !goal.pathVisited) {
         exploredNodes++;
-        
+
         NodeAI v = q.remove();
         v.pathVisited = true;
 
@@ -542,21 +541,21 @@ class Team1 extends Team {
     }
 
 
-/** 
-    Algorithm that finds the closest path between two Nodes given two PVectors.
-    Using a graph that the tanks holds in memory, expands the cheapest routes first
-    until it finds the closest path home or until no path is found. 
-    
-    The cost to traverse the graph is 1 per edge and A* also uses a heuristic function 
-    that is defined as the euclidian distance from the current node to the starting 
-    position, which the tank has in memory. 
-    
-    Based on the explanation from: 
-    Mark Allen Weiss. Data Structures and Algorithm Analysis in Java. 
-    Pearson Education, third edition, 2012, p. 399.
-
-    @return   Stack with the nodes that the tank needs to go to in order to get to the home base.
-    */ 
+    /**
+     Algorithm that finds the closest path between two Nodes given two PVectors.
+     Using a graph that the tanks holds in memory, expands the cheapest routes first
+     until it finds the closest path home or until no path is found.
+     
+     The cost to traverse the graph is 1 per edge and A* also uses a heuristic function
+     that is defined as the euclidian distance from the current node to the starting
+     position, which the tank has in memory.
+     
+     Based on the explanation from:
+     Mark Allen Weiss. Data Structures and Algorithm Analysis in Java.
+     Pearson Education, third edition, 2012, p. 399.
+     
+     @return   Stack with the nodes that the tank needs to go to in order to get to the home base.
+     */
     public Stack<PVector> aStar(PVector start, PVector dest) {
       // A* uses a priority queue for getting the next frontier node with the lowest cost that will be explored next.
       // PriorityQueue<NodeAI> q = new PriorityQueue<NodeAI>(Comparator.comparingDouble((NodeAI a) -> a.fCost));
@@ -605,7 +604,7 @@ class Team1 extends Team {
             if (cost < next.pathCost) {
               next.pathCost = cost;
               next.setFCost(dest);
-              
+
               next.path = expanding.position;
               q.add(next);
             }

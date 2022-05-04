@@ -1,4 +1,4 @@
-/*
+/* //<>// //<>//
 
  Inlämingsuppgift 1 för AI - VT22
  
@@ -120,9 +120,9 @@ class SensorDistance extends Sensor {
     return pvec;
   }
 
- //<>//
+
   //******************************************************
-  // Returnera avståndet till kanten i tankens riktning. //<>//
+  // Returnera avståndet till kanten i tankens riktning.
   public SensorReading readValue() {
 
     PVector v11, v12, v21, v22, h11, h12, h21, h22;
@@ -143,7 +143,7 @@ class SensorDistance extends Sensor {
     h21 = new PVector(0, height);    // nedre kant
     h22 = new PVector(width, height);
 
-
+    Sprite obj = new Sprite();
 
 
     // Returnera koordinaten som PVector, där tankens heading korsar kanterna på fönstret.
@@ -174,6 +174,18 @@ class SensorDistance extends Sensor {
 
         if (pvec.dist(tpos) > trees[i].dist(tpos)) {
           pvec = trees[i];
+          obj = new Tree((int) pvec.x, (int) pvec.y);
+        }
+      }
+    }
+
+    for (int i=0; i<allTanks.length; i++) {
+
+      if (isEitherSide(tpos, allTanks[i].position, pvec, 50/4)) {
+
+        if (pvec.dist(tpos) > allTanks[i].position.dist(tpos) && tpos != allTanks[i].position) {
+          pvec = allTanks[i].position;
+          obj = allTanks[i];
         }
       }
     }
@@ -188,7 +200,7 @@ class SensorDistance extends Sensor {
     float minDistance = tank.radius * 2;
 
     // Skapa ett nytt SensorReading objekt.
-    Sprite obj = new Sprite();
+
     obj.position = pvec;
 
 
