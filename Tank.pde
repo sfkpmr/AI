@@ -70,6 +70,7 @@ class Tank extends Sprite { //<>// //<>//
   boolean isRotating; // Tanken håller på att rotera.
   boolean isColliding; // Tanken håller på att krocka.
   boolean isAtHomebase;
+  boolean isAtEnemybase;
   boolean userControlled; // Om användaren har tagit över kontrollen.
   boolean isRetreating; //flyr
   boolean isReporting; //rapporterar fiende tanks
@@ -309,17 +310,22 @@ class Tank extends Sprite { //<>// //<>//
       if (obj.name == null) {
         println("Looking at edge");
       } else if ( obj.name.equalsIgnoreCase("tank")) {
-
-        // if (!obj.isAtHomebase) {
         String stance = null;
 
-        for (int i = 0; i < allTanks.length; i++) {
-          if (allTanks[i].position == obj.position ) {
+        //TODO check if immobilized/destroyed
 
+        for (int i = 0; i < allTanks.length; i++) {
+          Tank target = allTanks[i];
+          if (allTanks[i].position == obj.position ) {
             if (allTanks[i].team_id != this.team_id) {
 
-              stance = "hostile";
-              isRetreating = true;
+
+              if (  this.isAtEnemybase && target.isAtHomebase  ) {
+                stance = "hostile";
+                isRetreating = true;
+              } else {
+                println("Ignoring tank");
+              }
             } else {
               stance = "friendly";
             }
@@ -1007,6 +1013,12 @@ class Tank extends Sprite { //<>// //<>//
     } else {
       isAtHomebase = false;
     }
+    
+    
+
+    
+    
+    
   }
 
   // Tanken meddelas om att tanken är i hembasen.
