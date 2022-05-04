@@ -397,8 +397,6 @@ class Team1 extends Team {
         graph.put(startpos, startingNode);
       }
 
-
-
       if (!this.userControlled) {
 
         if (this.isRetreating) {

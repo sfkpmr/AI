@@ -142,8 +142,8 @@ class Tank extends Sprite { //<>// //<>//
 
     this.ball = ball;
     this.hasShot = false;
-    this.maxspeed = 9; //3;
-    this.maxforce = 0.6; //0.1
+    this.maxspeed = 3; //3;
+    this.maxforce = 0.1; //0.1
     this.maxrotationspeed = radians(3);
     this.rotation_speed = 0;
     this.image_scale = 0.5;
@@ -308,7 +308,7 @@ class Tank extends Sprite { //<>// //<>//
       Sprite obj = s.readValue().obj();
 
       if (obj.name == null) {
-        println("Looking at edge");
+        println("Looking at horizon");
       } else if ( obj.name.equalsIgnoreCase("tank")) {
         String stance = null;
 
@@ -316,11 +316,11 @@ class Tank extends Sprite { //<>// //<>//
 
         for (int i = 0; i < allTanks.length; i++) {
           Tank target = allTanks[i];
-          if (allTanks[i].position == obj.position ) {
-            if (allTanks[i].team_id != this.team_id) {
+          if (target.position == obj.position ) {
+            if (target.team_id != this.team_id) {
 
 
-              if (  this.isAtEnemybase && target.isAtHomebase  ) {
+              if (  this.isAtEnemybase ) {
                 stance = "hostile";
                 isRetreating = true;
               } else {
@@ -332,8 +332,9 @@ class Tank extends Sprite { //<>// //<>//
           }
         }
 
-
-        println("Looking at " + stance + " tank!");
+        if (stance != null) {
+          println("Looking at " + stance + " tank!");
+        }
       } else {
         println("Looking at tree at " + obj.position);
       }
@@ -1013,12 +1014,25 @@ class Tank extends Sprite { //<>// //<>//
     } else {
       isAtHomebase = false;
     }
-    
-    
 
-    
-    
-    
+    float enemyBase_x = 650;
+    float enemyBase_y = 450;
+    float enemyBase_width = 150;
+    float enemyBase_height = 350;
+
+    if (
+      position.x > enemyBase_x &&
+      position.x < enemyBase_x+enemyBase_width &&
+      position.y > enemyBase_y &&
+      position.y < enemyBase_y+enemyBase_height) {
+      if (!isAtHomebase) {
+        isAtEnemybase = true;
+        println("IS IN ENEMY BASE");
+        //  message_arrivedAtHomebase();
+      }
+    } else {
+      isAtEnemybase = false;
+    }
   }
 
   // Tanken meddelas om att tanken är i hembasen.
