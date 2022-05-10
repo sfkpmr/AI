@@ -19,8 +19,8 @@ class Team1 extends Team {
     PVector tank2_startpos, int tank2_id, CannonBall ball2) {
     super(team_id, tank_size, c, tank0_startpos, tank0_id, ball0, tank1_startpos, tank1_id, ball1, tank2_startpos, tank2_id, ball2);
 
-    tanks[0] = new Tank(tank0_id, this, this.tank0_startpos, this.tank_size, ball0);
-    tanks[1] = new Tank(tank1_id, this, this.tank1_startpos, this.tank_size, ball1);
+    tanks[0] = new TankGIGAKILL(tank0_id, this, this.tank0_startpos, this.tank_size, ball0);
+    tanks[1] = new TankGIGAKILL(tank1_id, this, this.tank1_startpos, this.tank_size, ball1);
     tanks[2] = new Tank3(tank2_id, this, this.tank2_startpos, this.tank_size, ball2);
 
     //this.homebase_x = 0;
@@ -63,7 +63,7 @@ class Team1 extends Team {
 
     public void arrived() {
       super.arrived(); // Tank
-      println("*** Team"+this.team_id+".Tank["+ this.getId() + "].arrived()");
+      //println("*** Team"+this.team_id+".Tank["+ this.getId() + "].arrived()");
 
       chooseAction();
     }
@@ -236,7 +236,7 @@ class Team1 extends Team {
     //*******************************************************
     public void arrived() {
       super.arrived();
-      println("*** Team"+this.team_id+".Tank["+ this.getId() + "].arrived()");
+      //println("*** Team"+this.team_id+".Tank["+ this.getId() + "].arrived()");
 
       //moveTo(new PVector(int(random(width)),int(random(height))));
       //moveTo(grid.getRandomNodePosition());
@@ -266,7 +266,135 @@ class Team1 extends Team {
       }
     }
   }
+  public class TankGIGAKILL extends Tank {
+    boolean isWarTime = false;
+    Stack<PVector> desiredPath;
+    PVector enemyPosition;
+    HashMap<PVector, NodeAI> graph = new HashMap<PVector, NodeAI>();
+    
+    TankGIGAKILL(int id, Team team, PVector startpos, float diameter, CannonBall ball) {
+      super(id, team, startpos, diameter, ball);
+      
+    }
+    
+    public void updateLogic() {
+      
+      if (!this.userControlled) {
+          if (isWarTime) {
+            
+            if (!isRetreating){
+            pathFinding();
+            } else {
+              fire();
+            }
+            
+            //goKillAlot;
+          }        
+      }
+    }
+    
+    void pathFinding() {
 
+      if (this.desiredPath == null) {
+        findPathToEnemy();
+        desiredPath.pop();
+      }
+
+      if (this.stop_state && !this.isMoving) {
+        PVector var2 = desiredPath.pop();
+        moveTo(var2);
+      }
+    }
+    
+    void findPathToEnemy() {
+      this.desiredPath = aStar(grid.getNearestNodePosition(this.position), grid.getNearestNodePosition(enemyPosition));
+      println(desiredPath);
+    }
+    public void warTime(HashMap worldView, PVector enemyPosition) {
+      isWarTime = true;
+      this.graph = worldView;
+      this.enemyPosition = enemyPosition;
+      
+      NodeAI startingNode = new NodeAI(grid.getNearestNodePosition(startpos));
+      startingNode.valid = true;
+      graph.put(startpos, startingNode);
+    }
+    
+    Stack<PVector> getPath(PVector destination) {
+      Stack<PVector> path = new Stack<PVector>();
+      path.push(destination);
+      //   println("destination: " + destination);
+      NodeAI it = graph.get(destination);
+      while (it != null) {
+        NodeAI tmp = graph.get(it.path);
+        if (tmp == null) break;
+        //    println("tmp.position: " + tmp.position);
+        path.push(tmp.position);
+        it = graph.get(tmp.position);
+      }
+      return path;
+    }
+    
+    public Stack<PVector> aStar(PVector start, PVector dest) {
+      // A* uses a priority queue for getting the next frontier node with the lowest cost that will be explored next.
+      // PriorityQueue<NodeAI> q = new PriorityQueue<NodeAI>(Comparator.comparingDouble((NodeAI a) -> a.fCost));
+      PriorityQueue<NodeAI> q = new PriorityQueue<NodeAI>(new Comparator()
+      {
+        @Override
+          public int compare(Object a, Object b) {
+          NodeAI anode = (NodeAI) a;
+          NodeAI bnode = (NodeAI) b;
+          return Double.compare(anode.fCost, bnode.fCost);
+        }
+      }
+      );
+      // Reset costs and path for all nodes
+      for (NodeAI n : graph.values()) {
+        n.pathVisited = false;
+        n.fCost = Double.POSITIVE_INFINITY;
+        n.pathCost = Double.POSITIVE_INFINITY;
+        n.path = null;
+      }
+
+      // Initialize the algorithm by seting the start node first in the queue
+      NodeAI first = graph.get(start);
+      first.pathCost = 0;
+      first.setFCost(dest);
+      q.add(first);
+
+
+      NodeAI goal = graph.get(dest);
+      // unnecessery int for A*, but is used to get a print out of the nr of nodes the algorithm explored
+      int exploredNodes = 0;
+      while (!q.isEmpty() && !goal.pathVisited) {
+        NodeAI expanding = q.remove();
+        exploredNodes++;
+        expanding.pathVisited = true;
+
+        for (PVector pVec : expanding.adjacentNodeVectors()) {
+
+          NodeAI next = graph.get(pVec);
+          // if the path doesn't exist in memory or is invalid (i.e. cannot be walked on) then ignore this iteration
+          if (next == null || !next.valid) continue;
+
+          if (next.pathVisited == false) {
+            double cost = expanding.pathCost + 1;
+
+            if (cost < next.pathCost) {
+              next.pathCost = cost;
+              next.setFCost(dest);
+
+              next.path = expanding.position;
+              q.add(next);
+            }
+          }
+        }
+      }
+      String ex = String.format("A* explored %d numder of nodes", exploredNodes);
+      println(ex);
+      return getPath(dest);
+    }
+  }
   //==================================================
   public class Tank3 extends Tank {
     Sensor us_front; //ultrasonic_sensor front
@@ -310,7 +438,7 @@ class Team1 extends Team {
     public void arrived() {
       PVector tempTarget = targetPosition;
       super.arrived();
-      println("*** Team"+this.team_id+".Tank["+ this.getId() + "].arrived()");
+      //println("*** Team"+this.team_id+".Tank["+ this.getId() + "].arrived()");
       graph.get(grid.getNearestNode(position).position).valid = true;
       graph.get(grid.getNearestNode(position).position).visited = true;
       oldPosition = grid.getNearestNode(position).position;
@@ -358,7 +486,7 @@ class Team1 extends Team {
       } else if (canMoveToDirection("right")) {
         saveAndWalk(goDirection("right"), 50, 0);
       } else {
-        println("Knows everything");
+        //println("Knows everything");
         if (canMove(goDirection("right"))) {
           moveBy(new PVector(50, 0, 0));
         } else if (canMove(goDirection("down"))) {
@@ -403,7 +531,7 @@ class Team1 extends Team {
           
         }
         if (this.isRetreating) {
-
+          
           pathFinding();
 
           if (isAtHomebase && !isReporting) {
@@ -416,19 +544,30 @@ class Team1 extends Team {
           }
         }
 
-        if (millis() >= waitUntil && isReporting ) {
+        if (millis() >= waitUntil && isReporting && !stop_state) {
           println("Done reporting at: "+millis() + " " + remainingTime);
-          isReporting = false;
+          //isReporting = false;
           stop_state = true;
           this.desiredPath = null;
           isAttacking = true;
+          println("found tank at position: " + enemyPosition + "  isAttacking: " + isAttacking);
+          
+          for (Tank t : this.team.tanks) {
+            println(t);
+            if (t != this) {
+              TankGIGAKILL a = (TankGIGAKILL) t; 
+              a.warTime(graph, enemyPosition);
+            }
+          }
+         
+         return;
         }
 
         if (this.stop_state && !isRetreating && !isReporting && !bumpedIntoTree) {
-          println("moving");
+          //println("moving");
           moveOneStep();
         } else if (bumpedIntoTree && !isRetreating && !isReporting) {
-
+          println("jag är i ifen");
           NodeAI tmp = graph.get(grid.getNearestNode(position).position);
           tmp.valid = false;
 
@@ -443,6 +582,9 @@ class Team1 extends Team {
     void pathFinding() {
 
       if (this.desiredPath == null) {
+        NodeAI enemyNode = new NodeAI(grid.getNearestNodePosition(startpos));
+        enemyNode.valid = true;
+        graph.put(enemyPosition, enemyNode);
         this.desiredPath = dijkstras(grid.getNearestNodePosition(this.position), grid.getNearestNodePosition(this.startpos));
         println(desiredPath);
         this.desiredPath = aStar(grid.getNearestNodePosition(this.position), grid.getNearestNodePosition(this.startpos));
@@ -450,7 +592,7 @@ class Team1 extends Team {
         desiredPath.pop();
       }
 
-      if (!isMoving) {
+      if (this.stop_state && !isMoving) {
         PVector var2 = desiredPath.pop();
         moveTo(var2);
       }

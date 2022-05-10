@@ -145,8 +145,8 @@ class Tank extends Sprite { //<>// //<>//
 
     this.ball = ball;
     this.hasShot = false;
-    this.maxspeed = 29; //3;
-    this.maxforce = 1.2; //0.1
+    this.maxspeed = 50; //3;
+    this.maxforce = 5; //0.1
     this.maxrotationspeed = radians(3);
     this.rotation_speed = 0;
     this.image_scale = 0.5;
@@ -327,6 +327,7 @@ class Tank extends Sprite { //<>// //<>//
                 stance = "hostile";
                 isRetreating = true;
                 enemyPosition = target.position;
+                
                 
               } else {
                 println("Ignoring tank");
@@ -699,7 +700,7 @@ class Tank extends Sprite { //<>// //<>//
 
   //**************************************************
   void resetAllMovingStates() {
-    println("*** Tank[" + getId() + "].resetAllMovingStates()");
+    //println("*** Tank[" + getId() + "].resetAllMovingStates()");
     this.stop_state = true;
     this.backward_state = false;
     this.forward_state = false;

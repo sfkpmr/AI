@@ -66,7 +66,7 @@ class Team2 extends Team {
 
     public void arrived() {
       super.arrived(); // Tank
-      println("*** Team"+this.team_id+".Tank["+ this.getId() + "].arrived()");
+      //println("*** Team"+this.team_id+".Tank["+ this.getId() + "].arrived()");
 
       chooseAction();
     }
@@ -239,7 +239,7 @@ class Team2 extends Team {
     //*******************************************************
     public void arrived() {
       super.arrived();
-      println("*** Team"+this.team_id+".Tank["+ this.getId() + "].arrived()");
+      //println("*** Team"+this.team_id+".Tank["+ this.getId() + "].arrived()");
 
       //moveTo(new PVector(int(random(width)),int(random(height))));
       //moveTo(grid.getRandomNodePosition());
