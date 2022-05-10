@@ -10,10 +10,13 @@
  */
 
 class Tank extends Sprite { //<>// //<>//
+   PVector enemyPosition;
+
+
   int id;
   //String name; //Sprite
   int team_id;
-
+  
   PVector acceleration;
   PVector velocity;
   //PVector position; //Sprite
@@ -142,8 +145,8 @@ class Tank extends Sprite { //<>// //<>//
 
     this.ball = ball;
     this.hasShot = false;
-    this.maxspeed = 3; //3;
-    this.maxforce = 0.1; //0.1
+    this.maxspeed = 29; //3;
+    this.maxforce = 1.2; //0.1
     this.maxrotationspeed = radians(3);
     this.rotation_speed = 0;
     this.image_scale = 0.5;
@@ -308,7 +311,7 @@ class Tank extends Sprite { //<>// //<>//
       Sprite obj = s.readValue().obj();
 
       if (obj.name == null) {
-        println("Looking at horizon");
+        //println("Looking at horizon");
       } else if ( obj.name.equalsIgnoreCase("tank")) {
         String stance = null;
 
@@ -323,6 +326,8 @@ class Tank extends Sprite { //<>// //<>//
               if (  this.isAtEnemybase ) {
                 stance = "hostile";
                 isRetreating = true;
+                enemyPosition = target.position;
+                
               } else {
                 println("Ignoring tank");
               }
@@ -343,7 +348,7 @@ class Tank extends Sprite { //<>// //<>//
 
   //**************************************************
   void spin(int antal_varv) {
-    println("*** Tank[" + team.getId()+"].spin(int)");
+    //println("*** Tank[" + team.getId()+"].spin(int)");
     if (!this.isSpinning) {
       this.heading_saved = this.heading;
       isSpinning = true;
@@ -439,7 +444,7 @@ class Tank extends Sprite { //<>// //<>//
   void turnTurretLeft_state() {
     if (this.stop_state) {
       if (!this.turning_turret_left_state) {
-        println("*** Tank[" + getId() + "].turnTurretLeft_state()");
+        //println("*** Tank[" + getId() + "].turnTurretLeft_state()");
         this.turning_turret_right_state = false;
         this.turning_turret_left_state = true;
         this.stop_turret_turning_state = false;
@@ -459,7 +464,7 @@ class Tank extends Sprite { //<>// //<>//
   void turnTurretRight_state() {
     if (this.stop_state) {
       if (!this.turning_turret_right_state) {
-        println("*** Tank[" + getId() + "].turnTurretRight_state()");
+        //println("*** Tank[" + getId() + "].turnTurretRight_state()");
         this.turning_turret_left_state = false;
         this.turning_turret_right_state = true;
         this.stop_turret_turning_state = false;
@@ -478,7 +483,7 @@ class Tank extends Sprite { //<>// //<>//
   // Det är denna metod som får tankens kanon att sluta rotera.
   void stopTurretTurning_state() {
     if (!this.stop_turret_turning_state) {
-      println("*** Tank[" + getId() + "].stopTurretTurning_state()");
+      //println("*** Tank[" + getId() + "].stopTurretTurning_state()");
       this.turning_turret_left_state = false;
       this.turning_turret_right_state = false;
       this.stop_turret_turning_state = true;
@@ -492,7 +497,7 @@ class Tank extends Sprite { //<>// //<>//
     this.turning_right_state = false;
 
     if (!this.turning_left_state) {
-      println("*** Tank[" + getId() + "].turnLeft_state()");
+      //println("*** Tank[" + getId() + "].turnLeft_state()");
       this.turning_left_state = true;
     }
   }
@@ -519,7 +524,7 @@ class Tank extends Sprite { //<>// //<>//
     this.turning_left_state = false;
 
     if (!this.turning_right_state) {
-      println("*** Tank[" + getId() + "].turnRight_state()");
+      //println("*** Tank[" + getId() + "].turnRight_state()");
       this.turning_right_state = true;
     }
   }
@@ -541,7 +546,7 @@ class Tank extends Sprite { //<>// //<>//
 
   //**************************************************
   void turnRight(PVector targetPos) {
-    println("*** Tank[" + getId() + "].turnRight(PVector)");
+    //println("*** Tank[" + getId() + "].turnRight(PVector)");
     PVector desired = PVector.sub(targetPos, position);  // A vector pointing from the position to the target
 
     desired.setMag(0);
@@ -552,7 +557,7 @@ class Tank extends Sprite { //<>// //<>//
 
   //**************************************************
   void stopTurning() {
-    println("*** Tank[" + getId()+"].stopTurning()");
+    //println("*** Tank[" + getId()+"].stopTurning()");
     this.rotation_speed = 0;
     arrivedRotation();
   }
@@ -561,18 +566,18 @@ class Tank extends Sprite { //<>// //<>//
   // Det är denna metod som får tanken att sluta svänga.
   void stopTurning_state() {
     if (!this.stop_turning_state) {
-      println("*** Tank[" + getId() + "].stopTurning_state()");
+      //println("*** Tank[" + getId() + "].stopTurning_state()");
       this.turning_left_state = false;
       this.turning_right_state = false;
       this.stop_turning_state = true;
 
-      println("! Tank[" + getId() + "].stopTurning_state() – stop_turning_state=true");
+      //println("! Tank[" + getId() + "].stopTurning_state() – stop_turning_state=true");
     }
   }
 
   //**************************************************
   void moveTo(float x, float y) {
-    println("*** Tank["+ this.getId() + "].moveTo(float x, float y)");
+    //println("*** Tank["+ this.getId() + "].moveTo(float x, float y)");
 
     moveTo(new PVector(x, y));
   }
@@ -581,7 +586,7 @@ class Tank extends Sprite { //<>// //<>//
   void moveTo(PVector coord) {
     //println("*** Tank["+ this.getId() + "].moveTo(PVector)");
     if (!isImmobilized) {
-      println("*** Tank["+ this.getId() + "].moveTo(PVector)");
+      //println("*** Tank["+ this.getId() + "].moveTo(PVector)");
 
       this.idle_state = false;
       this.isMoving = true;
@@ -594,14 +599,14 @@ class Tank extends Sprite { //<>// //<>//
 
   //**************************************************
   void moveBy(float x, float y) {
-    println("*** Tank["+ this.getId() + "].moveBy(float x, float y)");
+    //println("*** Tank["+ this.getId() + "].moveBy(float x, float y)");
 
     moveBy(new PVector(x, y));
   }
 
   //**************************************************
   void moveBy(PVector coord) {
-    println("*** Tank["+ this.getId() + "].moveBy(PVector)");
+    //println("*** Tank["+ this.getId() + "].moveBy(PVector)");
 
     PVector newCoord = PVector.add(this.position, coord);
     PVector nodevec = grid.getNearestNodePosition(newCoord);
@@ -668,7 +673,7 @@ class Tank extends Sprite { //<>// //<>//
 
   //**************************************************
   void stopMoving() {
-    println("*** Tank[" + getId() + "].stopMoving()");
+    //println("*** Tank[" + getId() + "].stopMoving()");
 
     this.acceleration.set(0, 0, 0);
     this.velocity.set(0, 0, 0);
@@ -715,7 +720,7 @@ class Tank extends Sprite { //<>// //<>//
 
   //**************************************************
   void resetMovingStates() {
-    println("*** Tank[" + getId() + "].resetMovingStates()");
+    //println("*** Tank[" + getId() + "].resetMovingStates()");
     this.stop_state = true;
     this.backward_state = false;
     this.forward_state = false;
@@ -723,7 +728,7 @@ class Tank extends Sprite { //<>// //<>//
 
   //**************************************************
   void resetTargetStates() {
-    println("*** Tank[" + getId() + "].resetTargetStates()");
+    // println("*** Tank[" + getId() + "].resetTargetStates()");
     this.targetPosition = new PVector(this.position.x, this.position.y);
 
     this.targetHeading = this.heading; // Tanks har alltid en heading mot ett target.
@@ -800,7 +805,7 @@ class Tank extends Sprite { //<>// //<>//
   //**************************************************
 
   void rotateTo(PVector coord) {
-    println("*** Tank["+ this.getId() + "].rotateTo(PVector) – ["+(int)coord.x+","+(int)coord.y+"]");
+    //println("*** Tank["+ this.getId() + "].rotateTo(PVector) – ["+(int)coord.x+","+(int)coord.y+"]");
 
     if (!isImmobilized) {
 
@@ -868,7 +873,7 @@ class Tank extends Sprite { //<>// //<>//
 
   //**************************************************
   void arrived() {
-    println("*** Tank["+ this.getId() + "].arrived()");
+    //println("*** Tank["+ this.getId() + "].arrived()");
     this.isMoving = false;
     stopMoving_state();
   }
@@ -928,7 +933,7 @@ class Tank extends Sprite { //<>// //<>//
             resetAllMovingStates(); // Tank
             this.idle_state = true;
 
-            println("! Tank[" + getId() + "].update() – idle_state = true");
+            //println("! Tank[" + getId() + "].update() – idle_state = true");
           }
 
           // Om tanken håller på och rotera.
@@ -1252,14 +1257,14 @@ class Tank extends Sprite { //<>// //<>//
 
           //println("Hhaha" + s.readValue().obj());
 
-          println("============");
+          //println("============");
           //println("("+sens.x + " , "+sens.y+")");
           ellipse(sens.x, sens.y, 10, 10);
 
           if ((sens != null && !this.isSpinning && !isImmobilized)) {
             line(this.position.x, this.position.y, sens.x, sens.y);
             //   ellipse(sens.x, sens.y, 100, 100);
-            println("Tank" + this.team.getId() + ":"+this.id + " ( " + sens.x + ", "+ sens.y + " )");
+            // println("Tank" + this.team.getId() + ":"+this.id + " ( " + sens.x + ", "+ sens.y + " )");
           }
         }
       }

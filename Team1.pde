@@ -273,6 +273,7 @@ class Team1 extends Team {
     Stack<PVector> desiredPath;
     boolean started, first, bumpedIntoTree = false;
     PVector tempTarget = null, oldPosition = positionPrev;
+    boolean isAttacking = false;
 
     HashMap<PVector, NodeAI> graph = new HashMap<PVector, NodeAI>();
 
@@ -348,24 +349,24 @@ class Team1 extends Team {
      */
     void moveOneStep() {
 
-      if (canMoveToDirection("right")) {
-        saveAndWalk(goDirection("right"), 50, 0);
+      if (canMoveToDirection("down")) {
+        saveAndWalk(goDirection("down"), 0, 50);
       } else if (canMoveToDirection("up")) {
         saveAndWalk(goDirection("up"), 0, -50);
       } else if (canMoveToDirection("left")) {
         saveAndWalk(goDirection("left"), -50, 0);
-      } else if (canMoveToDirection("down")) {
-        saveAndWalk(goDirection("down"), 0, 50);
+      } else if (canMoveToDirection("right")) {
+        saveAndWalk(goDirection("right"), 50, 0);
       } else {
         println("Knows everything");
-        if (canMove(goDirection("down"))) {
+        if (canMove(goDirection("right"))) {
+          moveBy(new PVector(50, 0, 0));
+        } else if (canMove(goDirection("down"))) {
           moveBy(new PVector(0, 50, 0));
-        } else if (canMove(goDirection("left"))) {
-          moveBy(new PVector(-50, 0, 0));
         } else if (canMove(goDirection("up"))) {
           moveBy(new PVector(0, -50, 0));
-        } else if (canMove(goDirection("right"))) {
-          moveBy(new PVector(50, 0, 0));
+        } else if (canMove(goDirection("left"))) {
+          moveBy(new PVector(-50, 0, 0));
         } else {
           println("Error in pathfinding for primary search.");
         }
@@ -398,7 +399,9 @@ class Team1 extends Team {
       }
 
       if (!this.userControlled) {
-
+        if (isAttacking) {
+          
+        }
         if (this.isRetreating) {
 
           pathFinding();
@@ -409,6 +412,7 @@ class Team1 extends Team {
             stopMoving();
             isRetreating = false;
             isReporting = true;
+            
           }
         }
 
@@ -417,6 +421,7 @@ class Team1 extends Team {
           isReporting = false;
           stop_state = true;
           this.desiredPath = null;
+          isAttacking = true;
         }
 
         if (this.stop_state && !isRetreating && !isReporting && !bumpedIntoTree) {
