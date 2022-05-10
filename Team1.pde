@@ -300,9 +300,11 @@ class Team1 extends Team {
         desiredPath.pop();
       }
 
-      if (this.stop_state && !this.isMoving) {
+      if (this.stop_state && !this.isMoving && !desiredPath.isEmpty()) {
         PVector var2 = desiredPath.pop();
         moveTo(var2);
+      }else{
+        this.fire();
       }
     }
     
