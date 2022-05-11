@@ -1,13 +1,13 @@
 /*
 
-Inlämingsuppgift 1 för AI - VT22
-
-Grupp 5
-Simon Eklundh
-Max Nyström
-Marcus Wallén
-
-*/
+ Inlämningsuppgift 2 för AI - VT22
+ 
+ Grupp 5
+ Simon Eklundh
+ Max Nyström
+ Marcus Wallén
+ 
+ */
 
 import java.util.*;
 

@@ -1,13 +1,13 @@
 /*
 
-Inlämingsuppgift 1 för AI - VT22
-
-Grupp 5
-Simon Eklundh
-Max Nyström
-Marcus Wallén
-
-*/
+ Inlämningsuppgift 2 för AI - VT22
+ 
+ Grupp 5
+ Simon Eklundh
+ Max Nyström
+ Marcus Wallén
+ 
+ */
 
 import java.util.*;
 
@@ -19,8 +19,8 @@ class Team1 extends Team {
     PVector tank2_startpos, int tank2_id, CannonBall ball2) {
     super(team_id, tank_size, c, tank0_startpos, tank0_id, ball0, tank1_startpos, tank1_id, ball1, tank2_startpos, tank2_id, ball2);
 
-    tanks[0] = new Tank(tank0_id, this, this.tank0_startpos, this.tank_size, ball0);
-    tanks[1] = new Tank(tank1_id, this, this.tank1_startpos, this.tank_size, ball1);
+    tanks[0] = new TankGIGAKILL(tank0_id, this, this.tank0_startpos, this.tank_size, ball0);
+    tanks[1] = new TankGIGAKILL(tank1_id, this, this.tank1_startpos, this.tank_size, ball1);
     tanks[2] = new Tank3(tank2_id, this, this.tank2_startpos, this.tank_size, ball2);
 
     //this.homebase_x = 0;
@@ -63,7 +63,7 @@ class Team1 extends Team {
 
     public void arrived() {
       super.arrived(); // Tank
-      println("*** Team"+this.team_id+".Tank["+ this.getId() + "].arrived()");
+      //println("*** Team"+this.team_id+".Tank["+ this.getId() + "].arrived()");
 
       chooseAction();
     }
@@ -236,7 +236,7 @@ class Team1 extends Team {
     //*******************************************************
     public void arrived() {
       super.arrived();
-      println("*** Team"+this.team_id+".Tank["+ this.getId() + "].arrived()");
+      //println("*** Team"+this.team_id+".Tank["+ this.getId() + "].arrived()");
 
       //moveTo(new PVector(int(random(width)),int(random(height))));
       //moveTo(grid.getRandomNodePosition());
@@ -266,260 +266,59 @@ class Team1 extends Team {
       }
     }
   }
-
-  //==================================================
-  public class Tank3 extends Tank {
+  public class TankGIGAKILL extends Tank {
+    boolean isWarTime = false;
     Stack<PVector> desiredPath;
-    boolean started, first, bumpedIntoTree = false;
-    PVector tempTarget = null, oldPosition = positionPrev;
-
+    PVector enemyPosition;
     HashMap<PVector, NodeAI> graph = new HashMap<PVector, NodeAI>();
 
-    Tank3(int id, Team team, PVector startpos, float diameter, CannonBall ball) {
+    TankGIGAKILL(int id, Team team, PVector startpos, float diameter, CannonBall ball) {
       super(id, team, startpos, diameter, ball);
-
-      /*
-      Code for testing (gives the tank all nodes in memory in advance)
-
-      for (Node[] nn : grid.nodes) {
-       for (Node n : nn) {
-       NodeAI nai = new NodeAI(n.position);
-       // nai.valid = n.position.equals(grid.getNearestNode(new PVector(200, 550, 0)).position) ? false : true;
-       graph.put(n.position, nai);
-       }
-       }
-       */
-      this.started = false;
     }
 
-    @Override
-      public HashMap<PVector, NodeAI> getMap() {
-      return graph;
-    }
-
-    // Tanken meddelas om kollision med trädet.
-    public void message_collision(Tree other) {
-      println("*** Team"+this.team_id+".Tank["+ this.getId() + "].collision(Tree)");
-      bumpedIntoTree = true;
-    }
-
-    public void arrived() {
-      PVector tempTarget = targetPosition;
-      super.arrived();
-      println("*** Team"+this.team_id+".Tank["+ this.getId() + "].arrived()");
-      graph.get(grid.getNearestNode(position).position).valid = true;
-      graph.get(grid.getNearestNode(position).position).visited = true;
-      oldPosition = grid.getNearestNode(position).position;
-    }
-
-    boolean canMoveToDirection(String dir) {
-      return !graph.containsKey(goDirection(dir));
-    }
-
-    PVector goDirection(String dir) {
-      PVector temp = new PVector(0, 0, 0);
-
-      switch (dir) {
-      case "down":
-        temp = grid.getNearestNode(temp.add(position).add(0, 50, 0)).position;
-        break;
-      case "left":
-        temp = grid.getNearestNode(temp.add(position).add(-50, 0, 0)).position;
-        break;
-      case "up":
-        temp = grid.getNearestNode(temp.add(position).add(0, -50, 0)).position;
-        break;
-      case "right":
-        temp = grid.getNearestNode(temp.add(position).add(50, 0, 0)).position;
-        break;
-      default:
-        temp = grid.getNearestNode(temp.add(position)).position;
-      }
-      return temp;
-    }
-
-    /*
-     Our strategy for searching the map is divided into two parts. If there are adjacent nodes that have not been visisted before,
-     then we try to move to one such node in the following order: right, up, left, down. However,
-     if all adjacent nodes have already been visited, then we try to move to the node to the down, left, up or right, in that order.
-     */
-    void moveOneStep() {
-
-      if (canMoveToDirection("right")) {
-        saveAndWalk(goDirection("right"), 50, 0);
-      } else if (canMoveToDirection("up")) {
-        saveAndWalk(goDirection("up"), 0, -50);
-      } else if (canMoveToDirection("left")) {
-        saveAndWalk(goDirection("left"), -50, 0);
-      } else if (canMoveToDirection("down")) {
-        saveAndWalk(goDirection("down"), 0, 50);
-      } else {
-        println("Knows everything");
-        if (canMove(goDirection("down"))) {
-          moveBy(new PVector(0, 50, 0));
-        } else if (canMove(goDirection("left"))) {
-          moveBy(new PVector(-50, 0, 0));
-        } else if (canMove(goDirection("up"))) {
-          moveBy(new PVector(0, -50, 0));
-        } else if (canMove(goDirection("right"))) {
-          moveBy(new PVector(50, 0, 0));
-        } else {
-          println("Error in pathfinding for primary search.");
-        }
-      }
-    }
-
-    private boolean canMove(PVector direction) {
-      NodeAI temp = graph.get(direction);
-
-      return (temp.valid && !temp.position.equals(graph.get(goDirection("")).position));
-    }
-
-    private void saveAndWalk(PVector walkTo, int i, int i1) {
-      graph.put(walkTo, new NodeAI(walkTo));
-      moveBy(new PVector(i, i1, 0));
-    }
-
-    /*
-     The default objective of the agent is to efficiently search the world, with a couple of exceptions;
-     when encountering a tree it should return to the previous position and reevaluate,
-     when encountering an enemy it should return to base and report for 3 seconds.
-     */
     public void updateLogic() {
 
-      if (!started) {
-        started = true;
-        NodeAI startingNode = new NodeAI(grid.getNearestNodePosition(startpos));
-        startingNode.valid = true;
-        graph.put(startpos, startingNode);
-      }
-
       if (!this.userControlled) {
+        if (isWarTime) {
 
-        if (this.isRetreating) {
-
-          pathFinding();
-
-          if (isAtHomebase && !isReporting) {
-            waitUntil = millis() + 3000;
-            println("Reporting! Current world time: " + millis() + " waitUntil: " + waitUntil + " " + remainingTime);
-            stopMoving();
-            isRetreating = false;
-            isReporting = true;
+          if (!isRetreating) {
+            pathFinding();
+          } else {
+            fire();
           }
-        }
 
-        if (millis() >= waitUntil && isReporting ) {
-          println("Done reporting at: "+millis() + " " + remainingTime);
-          isReporting = false;
-          stop_state = true;
-          this.desiredPath = null;
-        }
-
-        if (this.stop_state && !isRetreating && !isReporting && !bumpedIntoTree) {
-          println("moving");
-          moveOneStep();
-        } else if (bumpedIntoTree && !isRetreating && !isReporting) {
-
-          NodeAI tmp = graph.get(grid.getNearestNode(position).position);
-          tmp.valid = false;
-
-          moveTo(oldPosition);
-          println("försöker backa från trädet");
-          bumpedIntoTree = false;
+          //goKillAlot;
         }
       }
     }
 
-    //The tank generates an efficient path home when it begins its retreat, and then moves one node every time it is not moving.
     void pathFinding() {
 
       if (this.desiredPath == null) {
-        this.desiredPath = dijkstras(grid.getNearestNodePosition(this.position), grid.getNearestNodePosition(this.startpos));
-        println(desiredPath);
-        this.desiredPath = aStar(grid.getNearestNodePosition(this.position), grid.getNearestNodePosition(this.startpos));
-        println(desiredPath);
+        findPathToEnemy();
         desiredPath.pop();
       }
 
-      if (!isMoving) {
+      if (this.stop_state && !this.isMoving && !desiredPath.isEmpty()) {
         PVector var2 = desiredPath.pop();
         moveTo(var2);
+      } else {
+        this.fire();
       }
     }
 
-    /** 
+    void findPathToEnemy() {
+      this.desiredPath = aStar(grid.getNearestNodePosition(this.position), grid.getNearestNodePosition(enemyPosition));
+      println(desiredPath);
+    }
+    public void warTime(HashMap worldView, PVector enemyPosition) {
+      isWarTime = true;
+      this.graph = worldView;
+      this.enemyPosition = enemyPosition;
 
-    Algorithm that finds the closest path between two Nodes given two PVectors.
-    Using a graph that the tanks holds in memory, expands the cheapest routes first
-    until it finds the closest path home or until no path is found. The cost to 
-    traverse the graph is 1 per edge. The cheapest route is the path with the lowest cost.
-    
-    Based on the explanation from: 
-    Mark Allen Weiss. Data Structures and Algorithm Analysis in Java. 
-    Pearson Education, third edition, 2012, p.399.
-
-    @return   Stack with the nodes that the tank needs to go to in order to get to the home base.
-    */ 
-    public Stack<PVector> dijkstras(PVector start, PVector dest) {
-      // Dijkstra's uses a priority queue for getting the next frontier node with 
-      // the lowest cost that will be explored next
-      PriorityQueue<NodeAI> q = new PriorityQueue<NodeAI>(new Comparator() {
-        @Override
-          public int compare(Object a, Object b) {
-          NodeAI anode = (NodeAI) a;
-          NodeAI bnode = (NodeAI) b;
-
-          return Double.compare(anode.pathCost, bnode.pathCost);
-        }
-      }
-      );
-
-      // Reset costs and path for all nodes
-      for (NodeAI n : graph.values()) {
-        n.path = null;
-        n.pathVisited = false;
-        n.pathCost = Double.POSITIVE_INFINITY;
-      }
-
-      // Add the node we are standing on as the starting node in the graph
-      NodeAI first = graph.get(start);
-      first.pathCost = 0;
-
-      // Initialize the algorithm by seting the start node first in the queue
-      q.add(first);
-      NodeAI goal = graph.get(dest);
-      // unnecessery int for dijkstra's algo, but is used to get a print out of the nr of nodes the algorithm explored
-      int exploredNodes = 0;
-
-
-      while (!q.isEmpty() && !goal.pathVisited) {
-        exploredNodes++;
-        
-        NodeAI v = q.remove();
-        v.pathVisited = true;
-
-        for (PVector pVec : v.adjacentNodeVectors()) {
-
-          NodeAI next = graph.get(pVec);
-          // if the path doesn't exist in memory or is invalid (i.e. cannot be walked on) then ignore this iteration
-          if (next == null || !next.valid) continue;
-
-          if (next.pathVisited == false) {
-            double cost = v.pathCost + 1;
-
-            if (cost < next.pathCost) {
-              next.pathCost = cost;
-              //
-              next.path = v.position;
-              q.add(next);
-            }
-          }
-        }
-      }
-      String ex = String.format("Dijkstra explored %d numder of nodes", exploredNodes);
-      println(ex);
-      return getPath(dest);
+      NodeAI startingNode = new NodeAI(grid.getNearestNodePosition(startpos));
+      startingNode.valid = true;
+      graph.put(startpos, startingNode);
     }
 
     Stack<PVector> getPath(PVector destination) {
@@ -537,22 +336,6 @@ class Team1 extends Team {
       return path;
     }
 
-
-/** 
-    Algorithm that finds the closest path between two Nodes given two PVectors.
-    Using a graph that the tanks holds in memory, expands the cheapest routes first
-    until it finds the closest path home or until no path is found. 
-    
-    The cost to traverse the graph is 1 per edge and A* also uses a heuristic function 
-    that is defined as the euclidian distance from the current node to the starting 
-    position, which the tank has in memory. 
-    
-    Based on the explanation from: 
-    Mark Allen Weiss. Data Structures and Algorithm Analysis in Java. 
-    Pearson Education, third edition, 2012, p. 399.
-
-    @return   Stack with the nodes that the tank needs to go to in order to get to the home base.
-    */ 
     public Stack<PVector> aStar(PVector start, PVector dest) {
       // A* uses a priority queue for getting the next frontier node with the lowest cost that will be explored next.
       // PriorityQueue<NodeAI> q = new PriorityQueue<NodeAI>(Comparator.comparingDouble((NodeAI a) -> a.fCost));
@@ -601,7 +384,373 @@ class Team1 extends Team {
             if (cost < next.pathCost) {
               next.pathCost = cost;
               next.setFCost(dest);
-              
+
+              next.path = expanding.position;
+              q.add(next);
+            }
+          }
+        }
+      }
+      String ex = String.format("A* explored %d numder of nodes", exploredNodes);
+      println(ex);
+      return getPath(dest);
+    }
+  }
+  //==================================================
+  public class Tank3 extends Tank {
+    Sensor us_front; //ultrasonic_sensor front
+    Stack<PVector> desiredPath;
+    boolean started, first, bumpedIntoTree = false;
+    PVector tempTarget = null, oldPosition = positionPrev;
+    boolean isAttacking = false;
+
+    HashMap<PVector, NodeAI> graph = new HashMap<PVector, NodeAI>();
+
+    Tank3(int id, Team team, PVector startpos, float diameter, CannonBall ball) {
+      super(id, team, startpos, diameter, ball);
+      us_front = getSensor("ULTRASONIC_FRONT");
+      addSensor(us_front);
+
+      /*
+      Code for testing (gives the tank all nodes in memory in advance)
+       
+       for (Node[] nn : grid.nodes) {
+       for (Node n : nn) {
+       NodeAI nai = new NodeAI(n.position);
+       // nai.valid = n.position.equals(grid.getNearestNode(new PVector(200, 550, 0)).position) ? false : true;
+       graph.put(n.position, nai);
+       }
+       }
+       */
+      this.started = false;
+    }
+
+    @Override
+      public HashMap<PVector, NodeAI> getMap() {
+      return graph;
+    }
+
+    // Tanken meddelas om kollision med trädet.
+    public void message_collision(Tree other) {
+      println("*** Team"+this.team_id+".Tank["+ this.getId() + "].collision(Tree)");
+      bumpedIntoTree = true;
+    }
+
+    public void arrived() {
+      PVector tempTarget = targetPosition;
+      super.arrived();
+      //println("*** Team"+this.team_id+".Tank["+ this.getId() + "].arrived()");
+      graph.get(grid.getNearestNode(position).position).valid = true;
+      graph.get(grid.getNearestNode(position).position).visited = true;
+      oldPosition = grid.getNearestNode(position).position;
+    }
+
+    boolean canMoveToDirection(String dir) {
+      return !graph.containsKey(goDirection(dir));
+    }
+
+    PVector goDirection(String dir) {
+      PVector temp = new PVector(0, 0, 0);
+
+      switch (dir) {
+      case "down":
+        temp = grid.getNearestNode(temp.add(position).add(0, 50, 0)).position;
+        break;
+      case "left":
+        temp = grid.getNearestNode(temp.add(position).add(-50, 0, 0)).position;
+        break;
+      case "up":
+        temp = grid.getNearestNode(temp.add(position).add(0, -50, 0)).position;
+        break;
+      case "right":
+        temp = grid.getNearestNode(temp.add(position).add(50, 0, 0)).position;
+        break;
+      default:
+        temp = grid.getNearestNode(temp.add(position)).position;
+      }
+      return temp;
+    }
+
+    /*
+     Our strategy for searching the map is divided into two parts. If there are adjacent nodes that have not been visisted before,
+     then we try to move to one such node in the following order: right, up, left, down. However,
+     if all adjacent nodes have already been visited, then we try to move to the node to the down, left, up or right, in that order.
+     */
+    void moveOneStep() {
+
+      if (canMoveToDirection("down")) {
+        saveAndWalk(goDirection("down"), 0, 50);
+      } else if (canMoveToDirection("up")) {
+        saveAndWalk(goDirection("up"), 0, -50);
+      } else if (canMoveToDirection("left")) {
+        saveAndWalk(goDirection("left"), -50, 0);
+      } else if (canMoveToDirection("right")) {
+        saveAndWalk(goDirection("right"), 50, 0);
+      } else {
+        //println("Knows everything");
+        if (canMove(goDirection("right"))) {
+          moveBy(new PVector(50, 0, 0));
+        } else if (canMove(goDirection("down"))) {
+          moveBy(new PVector(0, 50, 0));
+        } else if (canMove(goDirection("up"))) {
+          moveBy(new PVector(0, -50, 0));
+        } else if (canMove(goDirection("left"))) {
+          moveBy(new PVector(-50, 0, 0));
+        } else {
+          println("Error in pathfinding for primary search.");
+        }
+      }
+    }
+
+    private boolean canMove(PVector direction) {
+      NodeAI temp = graph.get(direction);
+
+      return (temp.valid && !temp.position.equals(graph.get(goDirection("")).position));
+    }
+
+    private void saveAndWalk(PVector walkTo, int i, int i1) {
+      graph.put(walkTo, new NodeAI(walkTo));
+      moveBy(new PVector(i, i1, 0));
+    }
+
+    /*
+     The default objective of the agent is to efficiently search the world, with a couple of exceptions;
+     when encountering a tree it should return to the previous position and reevaluate,
+     when encountering an enemy it should return to base and report for 3 seconds.
+     */
+    public void updateLogic() {
+
+      if (!started) {
+        started = true;
+        NodeAI startingNode = new NodeAI(grid.getNearestNodePosition(startpos));
+        startingNode.valid = true;
+        graph.put(startpos, startingNode);
+      }
+
+      if (!this.userControlled) {
+        if (isAttacking) {
+        }
+        if (this.isRetreating) {
+
+          pathFinding();
+
+          if (isAtHomebase && !isReporting) {
+            waitUntil = millis() + 3000;
+            println("Reporting! Current world time: " + millis() + " waitUntil: " + waitUntil + " " + remainingTime);
+            stopMoving();
+            isRetreating = false;
+            isReporting = true;
+          }
+        }
+
+        if (millis() >= waitUntil && isReporting && !stop_state) {
+          println("Done reporting at: "+millis() + " " + remainingTime);
+          //isReporting = false;
+          stop_state = true;
+          this.desiredPath = null;
+          isAttacking = true;
+          println("found tank at position: " + enemyPosition + "  isAttacking: " + isAttacking);
+
+          for (Tank t : this.team.tanks) {
+            println(t);
+            if (t != this) {
+              TankGIGAKILL a = (TankGIGAKILL) t;
+              a.warTime(graph, enemyPosition);
+            }
+          }
+
+          return;
+        }
+
+        if (this.stop_state && !isRetreating && !isReporting && !bumpedIntoTree) {
+          //println("moving");
+          moveOneStep();
+        } else if (bumpedIntoTree && !isRetreating && !isReporting) {
+          println("jag är i ifen");
+          NodeAI tmp = graph.get(grid.getNearestNode(position).position);
+          tmp.valid = false;
+
+          moveTo(oldPosition);
+          println("försöker backa från trädet");
+          bumpedIntoTree = false;
+        }
+      }
+    }
+
+    //The tank generates an efficient path home when it begins its retreat, and then moves one node every time it is not moving.
+    void pathFinding() {
+
+      if (this.desiredPath == null) {
+        NodeAI enemyNode = new NodeAI(grid.getNearestNodePosition(startpos));
+        enemyNode.valid = true;
+        graph.put(enemyPosition, enemyNode);
+        this.desiredPath = dijkstras(grid.getNearestNodePosition(this.position), grid.getNearestNodePosition(this.startpos));
+        println(desiredPath);
+        this.desiredPath = aStar(grid.getNearestNodePosition(this.position), grid.getNearestNodePosition(this.startpos));
+        println(desiredPath);
+        desiredPath.pop();
+      }
+
+      if (this.stop_state && !isMoving) {
+        PVector var2 = desiredPath.pop();
+        moveTo(var2);
+      }
+    }
+
+    /**
+     
+     Algorithm that finds the closest path between two Nodes given two PVectors.
+     Using a graph that the tanks holds in memory, expands the cheapest routes first
+     until it finds the closest path home or until no path is found. The cost to
+     traverse the graph is 1 per edge. The cheapest route is the path with the lowest cost.
+     
+     Based on the explanation from:
+     Mark Allen Weiss. Data Structures and Algorithm Analysis in Java.
+     Pearson Education, third edition, 2012, p.399.
+     
+     @return   Stack with the nodes that the tank needs to go to in order to get to the home base.
+     */
+    public Stack<PVector> dijkstras(PVector start, PVector dest) {
+      // Dijkstra's uses a priority queue for getting the next frontier node with
+      // the lowest cost that will be explored next
+      PriorityQueue<NodeAI> q = new PriorityQueue<NodeAI>(new Comparator() {
+        @Override
+          public int compare(Object a, Object b) {
+          NodeAI anode = (NodeAI) a;
+          NodeAI bnode = (NodeAI) b;
+
+          return Double.compare(anode.pathCost, bnode.pathCost);
+        }
+      }
+      );
+
+      // Reset costs and path for all nodes
+      for (NodeAI n : graph.values()) {
+        n.path = null;
+        n.pathVisited = false;
+        n.pathCost = Double.POSITIVE_INFINITY;
+      }
+
+      // Add the node we are standing on as the starting node in the graph
+      NodeAI first = graph.get(start);
+      first.pathCost = 0;
+
+      // Initialize the algorithm by seting the start node first in the queue
+      q.add(first);
+      NodeAI goal = graph.get(dest);
+      // unnecessery int for dijkstra's algo, but is used to get a print out of the nr of nodes the algorithm explored
+      int exploredNodes = 0;
+
+
+      while (!q.isEmpty() && !goal.pathVisited) {
+        exploredNodes++;
+
+        NodeAI v = q.remove();
+        v.pathVisited = true;
+
+        for (PVector pVec : v.adjacentNodeVectors()) {
+
+          NodeAI next = graph.get(pVec);
+          // if the path doesn't exist in memory or is invalid (i.e. cannot be walked on) then ignore this iteration
+          if (next == null || !next.valid) continue;
+
+          if (next.pathVisited == false) {
+            double cost = v.pathCost + 1;
+
+            if (cost < next.pathCost) {
+              next.pathCost = cost;
+              //
+              next.path = v.position;
+              q.add(next);
+            }
+          }
+        }
+      }
+      String ex = String.format("Dijkstra explored %d numder of nodes", exploredNodes);
+      println(ex);
+      return getPath(dest);
+    }
+
+    Stack<PVector> getPath(PVector destination) {
+      Stack<PVector> path = new Stack<PVector>();
+      path.push(destination);
+      //   println("destination: " + destination);
+      NodeAI it = graph.get(destination);
+      while (it != null) {
+        NodeAI tmp = graph.get(it.path);
+        if (tmp == null) break;
+        //    println("tmp.position: " + tmp.position);
+        path.push(tmp.position);
+        it = graph.get(tmp.position);
+      }
+      return path;
+    }
+
+
+    /**
+     Algorithm that finds the closest path between two Nodes given two PVectors.
+     Using a graph that the tanks holds in memory, expands the cheapest routes first
+     until it finds the closest path home or until no path is found.
+     
+     The cost to traverse the graph is 1 per edge and A* also uses a heuristic function
+     that is defined as the euclidian distance from the current node to the starting
+     position, which the tank has in memory.
+     
+     Based on the explanation from:
+     Mark Allen Weiss. Data Structures and Algorithm Analysis in Java.
+     Pearson Education, third edition, 2012, p. 399.
+     
+     @return   Stack with the nodes that the tank needs to go to in order to get to the home base.
+     */
+    public Stack<PVector> aStar(PVector start, PVector dest) {
+      // A* uses a priority queue for getting the next frontier node with the lowest cost that will be explored next.
+      // PriorityQueue<NodeAI> q = new PriorityQueue<NodeAI>(Comparator.comparingDouble((NodeAI a) -> a.fCost));
+      PriorityQueue<NodeAI> q = new PriorityQueue<NodeAI>(new Comparator()
+      {
+        @Override
+          public int compare(Object a, Object b) {
+          NodeAI anode = (NodeAI) a;
+          NodeAI bnode = (NodeAI) b;
+          return Double.compare(anode.fCost, bnode.fCost);
+        }
+      }
+      );
+      // Reset costs and path for all nodes
+      for (NodeAI n : graph.values()) {
+        n.pathVisited = false;
+        n.fCost = Double.POSITIVE_INFINITY;
+        n.pathCost = Double.POSITIVE_INFINITY;
+        n.path = null;
+      }
+
+      // Initialize the algorithm by seting the start node first in the queue
+      NodeAI first = graph.get(start);
+      first.pathCost = 0;
+      first.setFCost(dest);
+      q.add(first);
+
+
+      NodeAI goal = graph.get(dest);
+      // unnecessery int for A*, but is used to get a print out of the nr of nodes the algorithm explored
+      int exploredNodes = 0;
+      while (!q.isEmpty() && !goal.pathVisited) {
+        NodeAI expanding = q.remove();
+        exploredNodes++;
+        expanding.pathVisited = true;
+
+        for (PVector pVec : expanding.adjacentNodeVectors()) {
+
+          NodeAI next = graph.get(pVec);
+          // if the path doesn't exist in memory or is invalid (i.e. cannot be walked on) then ignore this iteration
+          if (next == null || !next.valid) continue;
+
+          if (next.pathVisited == false) {
+            double cost = expanding.pathCost + 1;
+
+            if (cost < next.pathCost) {
+              next.pathCost = cost;
+              next.setFCost(dest);
+
               next.path = expanding.position;
               q.add(next);
             }
