@@ -21,3 +21,5 @@ increase the numbers on lines 147 and 148 in Tank for faster moving tanks. Remem
 Tank 3 works, the others will not due to hardcoded changes in GUI functions, lines 53-65.
 
 The tank will only find tanks twice, then it gets stuck in the bottom left corner because of the poor implementation of the looking part in the wayfinding algorithm used to find new places to go to.
+
+The top tank is broken due to path finding errors in the bottom tank leading to it not knowing any node around it that it can go to. This could be resolved by giving it some sort of path finding but due to time restraints, we have chosen to leave it broken for now.
