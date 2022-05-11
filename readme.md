@@ -8,9 +8,9 @@ Marcus Wallén
 Projektlänk: https://github.com/sfkpmr/AI
 
 ## Requirements:
-Requires Processing v4.
-Requires the Minim ddf library
-Requires Ai For 2d Games
+- Processing v4
+- Minim ddf library
+- Ai For 2d Games
 ## Testing:
 Install Processing v4. Install the libraries through Sketch > Import library > Add library. Then hit run.
 
