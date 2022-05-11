@@ -1,18 +1,18 @@
 /*
 
-Inlämingsuppgift 1 för AI - VT22
-
-Grupp 5
-Simon Eklundh
-Max Nyström
-Marcus Wallén
-
-*/
+ Inlämningsuppgift 2 för AI - VT22
+ 
+ Grupp 5
+ Simon Eklundh
+ Max Nyström
+ Marcus Wallén
+ 
+ */
 
 //Används ännu inte
 //import processing.core.*;
 
-class SensorCompass extends Sensor{
+class SensorCompass extends Sensor {
 
   // Random noise applyed to the final reading
   private static final int NOISE_AMOUNT = 3;
@@ -25,25 +25,26 @@ class SensorCompass extends Sensor{
   //SensorCompass(GameSimulator g, Tank t){
   //  super(g, t);
   //}
-  SensorCompass(Tank t){
+  SensorCompass(Tank t) {
     super(t);
   }
 
   float lastRead = 0;
-  public float[] readValues(){
+  public float[] readValues() {
     //if(game.getTime() >= lastRead + READ_INTERVAL)
-    if(getTime() >= lastRead + READ_INTERVAL)
+    if (getTime() >= lastRead + READ_INTERVAL)
       doReading();
 
     return values;
   }
 
-  private void doReading(){
+  private void doReading() {
     Tank thisTank = getTank();
 
     //float orientation = (float)Math.toDegrees(thisTank.orientation);
     //float orientation = (float)Math.toDegrees(thisTank.heading);
-    float orientation = (float) thisTank.getHeadingInDegrees(); Math.toDegrees(thisTank.heading);
+    float orientation = (float) thisTank.getHeadingInDegrees();
+    Math.toDegrees(thisTank.heading);
 
     // Fix orientation (from 0-359)
     int multiples = (int)(orientation / 360);
@@ -53,5 +54,4 @@ class SensorCompass extends Sensor{
 
     values[0] = getReadingAfterNoise(orientation, NOISE_AMOUNT);
   }
-
 }

@@ -1,13 +1,13 @@
 /*
 
-Inlämingsuppgift 1 för AI - VT22
-
-Grupp 5
-Simon Eklundh
-Max Nyström
-Marcus Wallén
-
-*/
+ Inlämningsuppgift 2 för AI - VT22
+ 
+ Grupp 5
+ Simon Eklundh
+ Max Nyström
+ Marcus Wallén
+ 
+ */
 
 void keyPressed() {
   if (userControl) {
@@ -39,7 +39,7 @@ void keyPressed() {
     if (key == ' ') {
       //myAudio.shot();
       //myAudio.blast();
-      //myTank1.fire(); 
+      //myTank1.fire();
       println("keyPressed SPACE");
       allTanks[tankInFocus].fire();
     }
@@ -47,19 +47,18 @@ void keyPressed() {
 
   if (key == 'c') {
     userControl = !userControl;
-    
-//    allTanks[tankInFocus].stopMoving_state();
-//    allTanks[tankInFocus].stopTurning_state();
-//    allTanks[tankInFocus].stopTurretTurning_state();
-    
+
+    //    allTanks[tankInFocus].stopMoving_state();
+    //    allTanks[tankInFocus].stopTurning_state();
+    //    allTanks[tankInFocus].stopTurretTurning_state();
+
     if (!userControl) {
       allTanks[tankInFocus].releaseControl();
-        
     } else {
       allTanks[tankInFocus].takeControl();
     }
   }
-  
+
   if (key == 'p') {
     pause = !pause;
     if (pause) {

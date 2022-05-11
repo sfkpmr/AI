@@ -1,6 +1,6 @@
 /*
 
- Inlämingsuppgift 1 för AI - VT22
+ Inlämningsuppgift 2 för AI - VT22
  
  Grupp 5
  Simon Eklundh
@@ -271,28 +271,27 @@ class Team1 extends Team {
     Stack<PVector> desiredPath;
     PVector enemyPosition;
     HashMap<PVector, NodeAI> graph = new HashMap<PVector, NodeAI>();
-    
+
     TankGIGAKILL(int id, Team team, PVector startpos, float diameter, CannonBall ball) {
       super(id, team, startpos, diameter, ball);
-      
     }
-    
+
     public void updateLogic() {
-      
+
       if (!this.userControlled) {
-          if (isWarTime) {
-            
-            if (!isRetreating){
+        if (isWarTime) {
+
+          if (!isRetreating) {
             pathFinding();
-            } else {
-              fire();
-            }
-            
-            //goKillAlot;
-          }        
+          } else {
+            fire();
+          }
+
+          //goKillAlot;
+        }
       }
     }
-    
+
     void pathFinding() {
 
       if (this.desiredPath == null) {
@@ -303,11 +302,11 @@ class Team1 extends Team {
       if (this.stop_state && !this.isMoving && !desiredPath.isEmpty()) {
         PVector var2 = desiredPath.pop();
         moveTo(var2);
-      }else{
+      } else {
         this.fire();
       }
     }
-    
+
     void findPathToEnemy() {
       this.desiredPath = aStar(grid.getNearestNodePosition(this.position), grid.getNearestNodePosition(enemyPosition));
       println(desiredPath);
@@ -316,12 +315,12 @@ class Team1 extends Team {
       isWarTime = true;
       this.graph = worldView;
       this.enemyPosition = enemyPosition;
-      
+
       NodeAI startingNode = new NodeAI(grid.getNearestNodePosition(startpos));
       startingNode.valid = true;
       graph.put(startpos, startingNode);
     }
-    
+
     Stack<PVector> getPath(PVector destination) {
       Stack<PVector> path = new Stack<PVector>();
       path.push(destination);
@@ -336,7 +335,7 @@ class Team1 extends Team {
       }
       return path;
     }
-    
+
     public Stack<PVector> aStar(PVector start, PVector dest) {
       // A* uses a priority queue for getting the next frontier node with the lowest cost that will be explored next.
       // PriorityQueue<NodeAI> q = new PriorityQueue<NodeAI>(Comparator.comparingDouble((NodeAI a) -> a.fCost));
@@ -530,10 +529,9 @@ class Team1 extends Team {
 
       if (!this.userControlled) {
         if (isAttacking) {
-          
         }
         if (this.isRetreating) {
-          
+
           pathFinding();
 
           if (isAtHomebase && !isReporting) {
@@ -542,7 +540,6 @@ class Team1 extends Team {
             stopMoving();
             isRetreating = false;
             isReporting = true;
-            
           }
         }
 
@@ -553,16 +550,16 @@ class Team1 extends Team {
           this.desiredPath = null;
           isAttacking = true;
           println("found tank at position: " + enemyPosition + "  isAttacking: " + isAttacking);
-          
+
           for (Tank t : this.team.tanks) {
             println(t);
             if (t != this) {
-              TankGIGAKILL a = (TankGIGAKILL) t; 
+              TankGIGAKILL a = (TankGIGAKILL) t;
               a.warTime(graph, enemyPosition);
             }
           }
-         
-         return;
+
+          return;
         }
 
         if (this.stop_state && !isRetreating && !isReporting && !bumpedIntoTree) {

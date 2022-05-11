@@ -1,56 +1,56 @@
 /*
 
-Inlämingsuppgift 1 för AI - VT22
-
-Grupp 5
-Simon Eklundh
-Max Nyström
-Marcus Wallén
-
-*/
+ Inlämningsuppgift 2 för AI - VT22
+ 
+ Grupp 5
+ Simon Eklundh
+ Max Nyström
+ Marcus Wallén
+ 
+ */
 
 /*
-    This class uses Minim. When using Processing.js, we don't have 
-    access to Minim so we have an equivalent class, SoundManager.js
-    that handles audio.
-*/
-public class SoundManager{
+    This class uses Minim. When using Processing.js, we don't have
+ access to Minim so we have an equivalent class, SoundManager.js
+ that handles audio.
+ */
+public class SoundManager {
   boolean muted = false;
   Minim minim;
-  
+
   ArrayList <PlayerQueue> queuedSounds;
   ArrayList <String> queuedSoundNames;
 
   /*
       Handles the issue where we want to play multiple audio streams from the same clip.
-  */
-  private class PlayerQueue{
+   */
+  private class PlayerQueue {
     private ArrayList <AudioPlayer> players;
     private String path;
 
-    public PlayerQueue(String audioPath){
+    public PlayerQueue(String audioPath) {
 
       path = audioPath;
       players = new ArrayList<AudioPlayer>();
       appendPlayer();
     }
 
-    public void close(){
-      for(int i = 0; i < players.size(); i++){
+    public void close() {
+      for (int i = 0; i < players.size(); i++) {
         players.get(i).close();
       }
     }
 
-    public void play(){
+    public void play() {
       int freePlayerIndex = -1;
-      for(int i = 0; i < players.size(); i++){
-        if(players.get(i).isPlaying() == false){
+      for (int i = 0; i < players.size(); i++) {
+        if (players.get(i).isPlaying() == false) {
           freePlayerIndex = i;
           break;
         }
       }
 
-      if(freePlayerIndex == -1){
+      if (freePlayerIndex == -1) {
         appendPlayer();
         freePlayerIndex = players.size()-1;
       }
@@ -59,60 +59,59 @@ public class SoundManager{
       players.get(freePlayerIndex).rewind();
     }
 
-    private void appendPlayer(){
+    private void appendPlayer() {
       AudioPlayer player = minim.loadFile(path);
       players.add(player);
     }
 
-    public void setMute(boolean m){
-      for(int i = 0; i < players.size(); i++){
-        if(m){
+    public void setMute(boolean m) {
+      for (int i = 0; i < players.size(); i++) {
+        if (m) {
           players.get(i).mute();
-        }
-        else{
-          players.get(i).unmute(); 
+        } else {
+          players.get(i).unmute();
         }
       }
     }
   }
-  
+
   /*
   */
-  public SoundManager(PApplet applet){
+  public SoundManager(PApplet applet) {
     minim = new Minim(applet);
 
     queuedSounds = new ArrayList<PlayerQueue>();
     queuedSoundNames = new ArrayList<String>();
   }
-  
+
   /*
   */
-  public void setMute(boolean isMuted){
+  public void setMute(boolean isMuted) {
     muted = isMuted;
 
-    for(int i = 0; i < queuedSounds.size(); i++){
+    for (int i = 0; i < queuedSounds.size(); i++) {
       queuedSounds.get(i).setMute(muted);
     }
   }
-  
+
   /*
   */
-  public boolean isMuted(){
+  public boolean isMuted() {
     return muted;
   }
 
   /*private void play(AudioPlayer player){
-    if(muted || player.isPlaying()){
-      return;
-    }
-    
-    player.play();
-    player.rewind();
-  }*/
-  
+   if(muted || player.isPlaying()){
+   return;
+   }
+   
+   player.play();
+   player.rewind();
+   }*/
+
   /*
   */
-  public void addSound(String soundName){
+  public void addSound(String soundName) {
     //queuedSounds.add(new PlayerQueue("audio/" + soundName + ".wav"));
     queuedSounds.add(new PlayerQueue("audio/" + soundName + ".mp3"));
     queuedSoundNames.add(soundName);
@@ -120,30 +119,30 @@ public class SoundManager{
 
   /*
   */
-  public void playSound(String soundName){
-    if(muted){
+  public void playSound(String soundName) {
+    if (muted) {
       return;
     }
 
     int index = -1;
 
-    for(int i = 0; i < queuedSoundNames.size(); i++){
-      if(soundName.equals(queuedSoundNames.get(i))){
+    for (int i = 0; i < queuedSoundNames.size(); i++) {
+      if (soundName.equals(queuedSoundNames.get(i))) {
         index = i;
         break;
       }
     }
 
-    if(index != -1){
+    if (index != -1) {
       queuedSounds.get(index).play();
     }
   }
-  
+
   /*
   */
-  public void stop(){
+  public void stop() {
 
-    for(int i = 0; i < queuedSounds.size(); i++){
+    for (int i = 0; i < queuedSounds.size(); i++) {
       queuedSounds.get(i).close();
     }
 

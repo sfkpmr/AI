@@ -1,6 +1,6 @@
 /* //<>// //<>//
-
- Inlämingsuppgift 1 för AI - VT22
+ 
+ Inlämningsuppgift 2 för AI - VT22
  
  Grupp 5
  Simon Eklundh
@@ -9,14 +9,13 @@
  
  */
 
-class Tank extends Sprite { //<>// //<>//
-   PVector enemyPosition;
-
+class Tank extends Sprite { //<>//
+  PVector enemyPosition;
 
   int id;
   //String name; //Sprite
   int team_id;
-  
+
   PVector acceleration;
   PVector velocity;
   //PVector position; //Sprite
@@ -145,8 +144,8 @@ class Tank extends Sprite { //<>// //<>//
 
     this.ball = ball;
     this.hasShot = false;
-    this.maxspeed = 50; //3;
-    this.maxforce = 5; //0.1
+    this.maxspeed = 3; //3;
+    this.maxforce = 0.1; //0.1
     this.maxrotationspeed = radians(3);
     this.rotation_speed = 0;
     this.image_scale = 0.5;
@@ -327,8 +326,6 @@ class Tank extends Sprite { //<>// //<>//
                 stance = "hostile";
                 isRetreating = true;
                 enemyPosition = target.position;
-                
-                
               } else {
                 println("Ignoring tank");
               }

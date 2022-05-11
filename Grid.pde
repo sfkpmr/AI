@@ -1,20 +1,20 @@
 /*
 
-Inlämingsuppgift 1 för AI - VT22
-
-Grupp 5
-Simon Eklundh
-Max Nyström
-Marcus Wallén
-
-*/
+ Inlämningsuppgift 2 för AI - VT22
+ 
+ Grupp 5
+ Simon Eklundh
+ Max Nyström
+ Marcus Wallén
+ 
+ */
 
 class Grid {
   int cols, rows;
   int grid_size;
   Node[][] nodes;
 
-  //***************************************************  
+  //***************************************************
   Grid(int _cols, int _rows, int _grid_size) {
     cols = _cols;
     rows = _rows;
@@ -24,7 +24,7 @@ class Grid {
     createGrgetId();
   }
 
-  //***************************************************  
+  //***************************************************
   void createGrgetId() {
 
     for (int i = 0; i < cols; i++) {
@@ -35,7 +35,7 @@ class Grid {
     }
   }
 
-  //***************************************************  
+  //***************************************************
   // ANVÄNDS INTE!
   void display1() {
     for (int i = 0; i < cols; i++) {
@@ -47,7 +47,7 @@ class Grid {
     }
   }
 
-  //***************************************************  
+  //***************************************************
   void display() {
     for (int i = 0; i < cols; i++) {
       for (int j = 0; j < rows; j++) {
@@ -60,7 +60,7 @@ class Grid {
     }
   }
 
-  //***************************************************  
+  //***************************************************
   // ANVÄNDS INTE!
   PVector getNearestNode1(PVector pvec) {
     //PVector pvec = new PVector(x,y);
@@ -75,17 +75,17 @@ class Grid {
     return vec;
   }
 
-  //***************************************************  
+  //***************************************************
   Node getNearestNode(PVector pvec) {
     // En justering för extremvärden.
     float tempx = pvec.x;
     float tempy = pvec.y;
-    if (pvec.x < 5) { 
+    if (pvec.x < 5) {
       tempx=5;
     } else if (pvec.x > width-5) {
       tempx=width-5;
     }
-    if (pvec.y < 5) { 
+    if (pvec.y < 5) {
       tempy=5;
     } else if (pvec.y > height-5) {
       tempy=height-5;
@@ -120,7 +120,7 @@ class Grid {
   //  for (int i = 0; i < cols; i++) {
   //    for (int j = 0; j < rows; j++) {
   //      if (nodes[i][j].position.dist(pvec) < grid_size) {
-  //        nearestNodes.add(nodes[i][j]);      
+  //        nearestNodes.add(nodes[i][j]);
   //      }
   //    }
   //  }
@@ -134,22 +134,22 @@ class Grid {
 
   //  return nearestNode;
   //}
-  
-  //***************************************************  
+
+  //***************************************************
   PVector getNearestNodePosition(PVector pvec) {
     Node n = getNearestNode(pvec);
-    
+
     return n.position;
   }
 
-  //***************************************************  
+  //***************************************************
   // ANVÄNDS INTE?
   void displayNearestNode(float x, float y) {
     PVector pvec = new PVector(x, y);
     displayNearestNode(pvec);
   }
 
-  //***************************************************  
+  //***************************************************
   // ANVÄNDS INTE!
   void displayNearestNode1(PVector pvec) {
     //PVector pvec = new PVector(x,y);
@@ -163,14 +163,14 @@ class Grid {
     }
   }
 
-  //***************************************************  
+  //***************************************************
   void displayNearestNode(PVector pvec) {
 
     PVector vec = getNearestNodePosition(pvec);
     ellipse(vec.x, vec.y, 5, 5);
   }
 
-  //***************************************************  
+  //***************************************************
   PVector getRandomNodePosition() {
     int c = int(random(cols));
     int r = int(random(rows));
@@ -179,7 +179,7 @@ class Grid {
 
     return rn;
   }
-  
+
   //***************************************************
   // Används troligen tillsammans med getNearestNode().empty
   // om tom så addContent(Sprite)
@@ -187,5 +187,4 @@ class Grid {
     Node n = getNearestNode(s.position);
     n.addContent(s);
   }
-  
 }

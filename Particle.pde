@@ -1,13 +1,13 @@
 /*
 
-Inlämingsuppgift 1 för AI - VT22
-
-Grupp 5
-Simon Eklundh
-Max Nyström
-Marcus Wallén
-
-*/
+ Inlämningsuppgift 2 för AI - VT22
+ 
+ Grupp 5
+ Simon Eklundh
+ Max Nyström
+ Marcus Wallén
+ 
+ */
 
 class Particle {
   PVector position;
@@ -20,7 +20,7 @@ class Particle {
     this.position = new PVector().set(l);
     this.velocity = new PVector(random(-1, 1), random(-1, 1));
     //position = l.get();
-    
+
     lifespan = 255.0;
   }
 
@@ -49,8 +49,7 @@ class Particle {
   boolean isDead() {
     if (lifespan < 0.0) {
       return true;
-    } 
-    else {
+    } else {
       return false;
     }
   }

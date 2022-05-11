@@ -1,13 +1,13 @@
 /*
 
-Inlämingsuppgift 1 för AI - VT22
-
-Grupp 5
-Simon Eklundh
-Max Nyström
-Marcus Wallén
-
-*/
+ Inlämningsuppgift 2 för AI - VT22
+ 
+ Grupp 5
+ Simon Eklundh
+ Max Nyström
+ Marcus Wallén
+ 
+ */
 
 class NodeAI extends Node {
   double pathCost, fCost;
@@ -30,12 +30,12 @@ class NodeAI extends Node {
 
     return new PVector[]{left, up, right, down};
   }
-  
+
   void setFCost(PVector dest) {
     this.fCost = pathCost + hCost(dest);
   }
-  
-  double hCost(PVector dest){
+
+  double hCost(PVector dest) {
     return PVector.dist(this.position, dest);
   }
 }
