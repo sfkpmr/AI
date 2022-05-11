@@ -19,6 +19,8 @@ Increase the numbers on lines 147 and 148 in class Tank for faster moving tanks.
 
 ## Notes:
 
+We've only tested tanks in the order that they are currently defined. 
+
 The top tank is broken due to path finding errors in the bottom tank leading to it not knowing any node around it that it can go to. This could be resolved by giving it some sort of path finding but due to time restraints, we have chosen to leave it broken for now. It's possible to sidestep this issue by using the higher speeds under testing tips.
 
 Adjust volume before running, shooting tanks can be very loud.
