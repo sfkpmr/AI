@@ -1,4 +1,4 @@
-# Inlämningsuppgift 1 för AI - VT22
+# Inlämningsuppgift 2 för AI - VT22
 
 ## Grupp 5
 Simon Eklundh  
