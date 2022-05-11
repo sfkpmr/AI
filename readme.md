@@ -10,9 +10,12 @@ Projektlänk: https://github.com/sfkpmr/AI
 ## Requirements:
 Requires Processing v4.
 Requires the Minim ddf library
-
+Requires Ai For 2d Games
 ## Testing:
-Install Processing v4. Install the Minim library through Sketch > Import library > Add library. Then hit run.
+Install Processing v4. Install the libraries through Sketch > Import library > Add library. Then hit run.
+
+## Testing tips:
+increase the numbers on lines 147 and 148 in Tank for faster moving tanks. Remember to increase the max force when increasing max speed to avoid jojo-effects on the tank movement.
 
 ## Notes:
 Tank 3 works, the others will not due to hardcoded changes in GUI functions, lines 53-65.
