@@ -10,7 +10,7 @@ Projektlänk: https://github.com/sfkpmr/AI
 ## Requirements:
 - Processing v4
 - Minim ddf library
-- AI For 2D Games
+- AI for 2D Games
 ## Testing:
 Install Processing v4. Install the libraries through Sketch > Import library > Add library. Then hit run.
 
@@ -20,8 +20,6 @@ Increase the numbers on lines 147 and 148 in class Tank for faster moving tanks.
 ## Notes:
 Tank 3 works, the others will not due to hardcoded changes in GUI functions, lines 53-65.
 
-The tank will only find tanks twice, then it gets stuck in the bottom left corner because of the poor implementation of the looking part in the wayfinding algorithm used to find new places to go to.
-
-The top tank is broken due to path finding errors in the bottom tank leading to it not knowing any node around it that it can go to. This could be resolved by giving it some sort of path finding but due to time restraints, we have chosen to leave it broken for now.
+The top tank is broken due to path finding errors in the bottom tank leading to it not knowing any node around it that it can go to. This could be resolved by giving it some sort of path finding but due to time restraints, we have chosen to leave it broken for now. It's possible to sidestep this issue by using the higher speeds under testing tips.
 
 Adjust volume before running, shooting tanks can be very loud.
