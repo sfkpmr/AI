@@ -266,6 +266,12 @@ class Team1 extends Team {
       }
     }
   }
+  
+  /**
+  * A new tank whose only role is backing up the scout(tank3).
+  * It receives a map and a location from the scout and goes to said position and shoots. 
+  *
+  **/    
   public class TankGIGAKILL extends Tank {
     boolean isWarTime = false;
     Stack<PVector> desiredPath;
@@ -279,19 +285,18 @@ class Team1 extends Team {
     public void updateLogic() {
 
       if (!this.userControlled) {
+        //if an enemy has been found
         if (isWarTime) {
-
+          // if we are not at the enemy's position
           if (!isRetreating) {
             pathFinding();
-          } else {
-            fire();
           }
-
-          //goKillAlot;
         }
       }
     }
-
+    /**
+    * get a path to the enemy
+    **/
     void pathFinding() {
 
       if (this.desiredPath == null) {
@@ -303,6 +308,7 @@ class Team1 extends Team {
         PVector var2 = desiredPath.pop();
         moveTo(var2);
       } else {
+        // if we're at the enemy, fire
         this.fire();
       }
     }
@@ -321,6 +327,7 @@ class Team1 extends Team {
       graph.put(startpos, startingNode);
     }
 
+    // given a destination, gets the path from the current position to the destination, after aStar has found that there is a path
     Stack<PVector> getPath(PVector destination) {
       Stack<PVector> path = new Stack<PVector>();
       path.push(destination);
@@ -473,8 +480,8 @@ class Team1 extends Team {
 
     /*
      Our strategy for searching the map is divided into two parts. If there are adjacent nodes that have not been visisted before,
-     then we try to move to one such node in the following order: right, up, left, down. However,
-     if all adjacent nodes have already been visited, then we try to move to the node to the down, left, up or right, in that order.
+     then we try to move to one such node in the following order: down, up, left, right. However,
+     if all adjacent nodes have already been visited, then we try to move to the node to the right, down, up or left, in that order.
      */
     void moveOneStep() {
 
@@ -554,7 +561,9 @@ class Team1 extends Team {
           for (Tank t : this.team.tanks) {
             println(t);
             if (t != this) {
+              // gets a reference to the helper tank
               TankGIGAKILL a = (TankGIGAKILL) t;
+              //tells the helper tank where there is an enemy
               a.warTime(graph, enemyPosition);
             }
           }
